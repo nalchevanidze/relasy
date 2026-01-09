@@ -8,7 +8,7 @@ export const main = async () => {
   const cli = new Command()
     .name("Relasy")
     .description("Generate Automated Releases")
-    .version("0.26.0");
+    .version("0.1.1");
 
   cli
     .command("changelog")

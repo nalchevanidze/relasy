@@ -1,4 +1,4 @@
-import * as core from "@actions/core";
+import { info, setFailed } from "@actions/core";
 import { Relasy } from "@relasy/core";
 
 async function run() {
@@ -18,10 +18,12 @@ async function run() {
 
     await easy.release();
 
-    core.info("Draft release finished.");
+    info("Draft release finished.");
   } catch (e: any) {
-    core.setFailed(e?.message ?? String(e));
+    setFailed(e?.message ?? String(e));
   }
 }
 
-run();
+if (require.main === module) {
+  run();
+}

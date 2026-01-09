@@ -4,13 +4,15 @@
   "version": "1.1.0",
   "main": "dist/index.js",
   "scripts": {
-    "build": "ncc build src/index.js -o dist"
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/index.js"
   },
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@actions/exec": "^1.1.1"
+    "@actions/exec": "^1.1.1",
+    "@releasy/core": "0.31.0"
   },
   "devDependencies": {
-    "@vercel/ncc": "^0.38.1"
+    "esbuild": "^0.21.5",
+    "typescript": "^5.0.0"
   }
 }

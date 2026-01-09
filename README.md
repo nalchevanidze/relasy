@@ -1,0 +1,67 @@
+# Relasy Actions
+
+## Overview
+
+This repository contains GitHub Actions developed to facilitate release management. These actions can be integrated into your GitHub workflows to automate the process of creating and publishing releases.
+
+## Draft Release Action Template
+
+```yaml
+name: Draft Release
+on: workflow_dispatch
+
+permissions:
+    contents: write
+    pull-requests: write
+
+jobs:
+    draft-release:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+                with:
+                    ref: main
+                    fetch-depth: 0
+
+            - name: Setup Release
+                run: <commands-to-setup-release-environment-and-bump-version>
+
+            - name: Draft Release
+                uses: nalchevanidze/relasy/actions/draft-release@main
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```
+
+## Publish Release Action Template
+
+```yaml
+name: Publish Release
+on:
+    pull_request:
+        types: [closed]
+
+jobs:
+    detect_release:
+        runs-on: ubuntu-latest
+        outputs:
+            should_publish: ${{ steps.detect.outputs.should_publish }}
+        steps:
+            - id: detect
+                uses: nalchevanidze/relasy/actions/check-release@main
+
+    publish_release:
+        needs: detect_release
+        if: ${{ needs.detect_release.outputs.should_publish == 'true' }}
+        runs-on: ubuntu-latest
+        permissions:
+            contents: write
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Push Packages to Registry
+                run: <your-package-publish-command-here>
+
+            - uses: nalchevanidze/relasy/actions/publish-release@main
+                env:
+                    GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+```

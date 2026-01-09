@@ -54182,12 +54182,12 @@ var import_github = __toESM(require_github());
 var import_core2 = __toESM(require_dist());
 async function run() {
   try {
-    const easy = await import_core2.Relasy.load();
+    const relasy = await import_core2.Relasy.load();
     const octokit = new import_rest.Octokit({ auth: process.env.GITHUB_TOKEN });
     const draft = (0, import_core.getInput)("draft", { required: false }) === "true";
     const { owner, repo } = import_github.context.repo;
     const body = (0, import_core.getInput)("body", { required: false }) ?? import_github.context.payload.pull_request?.body;
-    const version = easy.version();
+    const version = relasy.version();
     const { data } = await octokit.repos.createRelease({
       owner,
       repo,

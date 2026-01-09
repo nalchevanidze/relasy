@@ -5,8 +5,8 @@
     "actions/*"
   ],
   "scripts": {
-    "build": "npm run build -w=@releasy/core",
-    "prepublishOnly": "npm run build",
-    "dev": "npm run build && ts-node src/index.ts"
+    "build:core": "npm -w @releasy/core run build",
+    "build:action": "npm -w @releasy/draft-release-action run build",
+    "build": "npm run build:core && npm run build:action"
   }
 }

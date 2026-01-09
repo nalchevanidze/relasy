@@ -8,10 +8,13 @@
   "author": "Davit Nalchevanidze <d.nalchevanidze@gmail.com>",
   "license": "MIT",
   "private": false,
+  "exports": "./dist/index.js",
   "bin": {
     "releasy": "./dist/cli.js"
   },
-  "files": ["dist"],
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "rm -rf ./dist tsconfig.tsbuildinfo && tsc -b",
     "prepublishOnly": "npm run build",

@@ -1,17 +1,6 @@
 name: Draft Release
-description: Drafts a release PR/branch using gh-rel-easy, handling reruns safely.
+description: Draft a release PR/branch using gh-rel-easy (pinned) from the checked-out repository.
 
 runs:
-  using: "composite"
-  steps:
-    - name: Setup Node
-      uses: actions/setup-node@v6
-      with:
-        node-version: "20"
-        cache: npm
-
-    - name: Run
-      shell: bash
-      run: ${{ github.action_path }}/run.sh
-      env:
-        GITHUB_TOKEN: ${{ env.GITHUB_TOKEN }}
+  using: "node20"
+  main: "dist/index.js"

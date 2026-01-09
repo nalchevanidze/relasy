@@ -45287,10 +45287,14 @@ var require_dist = __commonJS({
   "../../packages/core/dist/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.Relasy = void 0;
+    exports2.exit = exports2.Relasy = void 0;
     var relasy_1 = require_relasy();
     Object.defineProperty(exports2, "Relasy", { enumerable: true, get: function() {
       return relasy_1.Relasy;
+    } });
+    var utils_1 = require_utils3();
+    Object.defineProperty(exports2, "exit", { enumerable: true, get: function() {
+      return utils_1.exit;
     } });
   }
 });

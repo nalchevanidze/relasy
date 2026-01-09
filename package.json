@@ -1,9 +1,13 @@
 {
   "private": true,
-  "workspaces": ["packages/*", "actions/*"],
+  "workspaces": [
+    "packages/*",
+    "actions/*"
+  ],
   "scripts": {
     "build:core": "npm -w @relasy/core run build",
     "build:action": "npm -w @relasy/draft-release-action run build",
-    "build": "npm run build:core && npm run build:action"
+    "build:cli": "npm -w @relasy/cli run build",
+    "build": "npm run build:core && npm run build:action && npm run build:cli"
   }
 }

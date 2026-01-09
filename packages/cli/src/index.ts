@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 import { Command } from "commander";
-import { Relasy } from "./lib/relasy";
-import { exit } from "./lib/utils";
+import { Relasy , exit } from "@relasy/core";
 
 export const main = async () => {
   const easy = await Relasy.load();

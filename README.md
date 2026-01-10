@@ -52,15 +52,17 @@ jobs:
   publish_release:
     if: ${{ github.base_ref == 'main' && startsWith(github.head_ref, 'release-') && github.event.pull_request.merged == true  }}
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
+    outputs:
+      upload_url: ${{ steps.publish.outputs.upload_url }}
     steps:
       - uses: actions/checkout@v4
 
       - name: Publish to Registry
         run: # Commands to publish package to registry
 
-      - uses: nalchevanidze/relasy/actions/publish-release@0.1.5
+      - name: Publish Release
+        uses: nalchevanidze/relasy/actions/publish-release@0.1.5
+        id: publish
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

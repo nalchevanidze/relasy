@@ -4,7 +4,7 @@
     "core": "relasy/core"
   },
   "pkg": "https://www.npmjs.com/package/{{SCOPE}}",
-  "version": "echo 0.1.1",
-  "next": "echo 0.1.2",
+  "version": "node -p \"require('./package.json').version\"",
+  "next": "npm version patch --no-git-tag-version",
   "setup": "echo setup"
 }

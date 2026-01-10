@@ -14,8 +14,12 @@ jobs:
           ref: main
           fetch-depth: 0
 
-      - name: Setup
-        run: # Commands to setup release environment and bump version
+      - uses: actions/setup-node@v4
+        with:
+        node-version: 20
+        cache: pnpm
+
+      - run: pnpm install --frozen-lockfile  
 
       - name: Draft Release
         uses: nalchevanidze/relasy/actions/draft-release@main

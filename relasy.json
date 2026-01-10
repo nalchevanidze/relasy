@@ -4,7 +4,7 @@
     "core": "relasy/core"
   },
   "pkg": "https://www.npmjs.com/package/{{SCOPE}}",
-  "version": "echo 1.1.1",
-  "next": "echo 1.1.2",
-  "setup": "echo setup"
+  "version": "echo 0.1.1",
+  "next": "echo 0.1.2",
+  "setup": ""
 }

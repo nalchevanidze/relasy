@@ -1,6 +1,7 @@
 import { isNil, map, pluck, reject, uniq } from "ramda";
-import { Change, Api, Commit, Config, LabelType, PR } from "./types";
+import { Change, Api, Commit, PR } from "./types";
 import { commitsAfter } from "../git";
+import { Config, LabelType } from "../config";
 
 const parseNumber = (msg: string) => {
   const num = / \(#(?<prNumber>[0-9]+)\)$/m.exec(msg)?.groups?.prNumber;
@@ -13,7 +14,7 @@ export class FetchApi extends Api {
       const [prefix, key, ...rest] = label.split("/");
 
       if (prefix !== t) return [];
-      
+
       const values: Record<string, unknown> = this.config[t];
 
       if (rest.length || !key || !values[key]) {

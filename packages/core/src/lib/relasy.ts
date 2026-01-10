@@ -1,44 +1,29 @@
 import { FetchApi } from "./changelog/fetch";
 import { RenderAPI } from "./changelog/render";
 import { lastTag } from "./git";
-import {
-  Change,
-  Api,
-  Config,
-  RawConfig,
-  ConfigSchema,
-} from "./changelog/types";
+import { Change, Api } from "./changelog/types";
 import { propEq } from "ramda";
 import { Github } from "./gh";
-import { writeFile, readFile } from "fs/promises";
+import { writeFile } from "fs/promises";
 import { execVoid, exec, exit } from "./utils";
+import { Config, loadConfig } from "./config";
+
 const isBreaking = (changes: Change[]) =>
   Boolean(changes.find(propEq("type", "breaking")));
-
-const defaultPR = {
-  major: "Major Change",
-  breaking: "Breaking Change",
-  feature: "New features",
-  fix: "Bug Fixes",
-  chore: "Minor Changes",
-};
 
 export class Relasy extends Api {
   private fetch: FetchApi;
   private render: RenderAPI;
 
-  constructor({ pr, ...config }: RawConfig) {
+  constructor(config: Config) {
     const github = new Github(config.gh, config.user);
-    const cfg: Config = { pr: { ...defaultPR, ...pr }, ...config };
-    super(cfg, github);
-    this.fetch = new FetchApi(cfg, github);
-    this.render = new RenderAPI(cfg, github);
+    super(config, github);
+    this.fetch = new FetchApi(config, github);
+    this.render = new RenderAPI(config, github);
   }
 
   public static async load() {
-    const data = await readFile("./relasy.json", "utf8").then(JSON.parse);
-    const config = ConfigSchema.parse(data);
-    return new Relasy(config);
+    return new Relasy(await loadConfig());
   }
 
   public version = () => exec(this.config.version);

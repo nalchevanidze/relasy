@@ -1,10 +1,10 @@
 {
   "gh": "nalchevanidze/relasy",
   "scope": {
-    "core": "@relasy/core"
+    "core": "relasy/core"
   },
   "pkg": "https://www.npmjs.com/package/{{SCOPE}}",
-  "version": "node -p \"require('./packages/core/package.json').version\"",
-  "next": "",
-  "setup": "npm install"
+  "version": "echo 1.1.1",
+  "next": "echo 1.1.2",
+  "setup": "echo setup"
 }

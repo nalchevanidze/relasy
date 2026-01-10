@@ -6,6 +6,12 @@ This repository contains GitHub Actions developed to facilitate release manageme
 
 ## Draft Release Action Template
 
+requires the following Workflow permissions to be set to "Read and write":
+
+  1. Go to your GitHub repository.
+  2. Navigate to:  Repo → Settings → Actions → General → Workflow permissions
+  3. Select "Read and write permissions".
+
 ```yaml
 name: Draft Release
 on: workflow_dispatch

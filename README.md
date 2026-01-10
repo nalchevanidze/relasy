@@ -34,7 +34,7 @@ jobs:
         run: # Commands to setup release environment and bump version
 
       - name: Draft Release
-        uses: nalchevanidze/relasy/actions/draft-release@main
+        uses: nalchevanidze/relasy/actions/draft-release@0.1.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
@@ -60,7 +60,7 @@ jobs:
       - name: Publish to Registry
         run: # Commands to publish package to registry
 
-      - uses: nalchevanidze/relasy/actions/publish-release@main
+      - uses: nalchevanidze/relasy/actions/publish-release@0.1.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 

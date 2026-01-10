@@ -5,7 +5,7 @@ on:
 
 jobs:
   publish_release:
-    if: ${{ github.base_ref == 'main' && startsWith(github.head_ref, 'publish-release/') && github.event.pull_request.merged == true  }}
+    if: ${{ github.base_ref == 'main' && startsWith(github.head_ref, 'release/') && github.event.pull_request.merged == true  }}
     runs-on: ubuntu-latest
     permissions:
       contents: write

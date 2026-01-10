@@ -85,7 +85,7 @@ export class Github {
   public issue = (n: number) => `https://${this.path}/issues/${n}`;
 
   public release = async (version: string, body: string) => {
-    const name = `publish-release/${version}`;
+    const name = `release/${version}`;
 
     git("add", ".");
     git("status");

@@ -6,7 +6,7 @@ import { Relasy } from "@relasy/core";
 const { owner, repo } = context.repo;
 
 // TODO: this action should only run if the PR is merged into main
-// if: ${{ github.base_ref == 'main' && startsWith(github.head_ref, 'publish-release/') && github.event.pull_request.merged == true  }}
+// if: ${{ github.base_ref == 'main' && startsWith(github.head_ref, 'release/') && github.event.pull_request.merged == true  }}
 
 const getbody = (): string => {
   const inputBody = getInput("body", { required: false });

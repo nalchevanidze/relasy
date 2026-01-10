@@ -45185,7 +45185,7 @@ var require_gh = __commonJS({
         }).then(({ repository }) => Object.values(repository)))).then((x) => x.flat().filter(Boolean));
         this.issue = (n) => `https://${this.path}/issues/${n}`;
         this.release = async (version, body) => {
-          const name = `publish-release/${version}`;
+          const name = `release/${version}`;
           (0, git_1.git)("add", ".");
           (0, git_1.git)("status");
           (0, git_1.git)("commit", "-m", `"${name}"`);

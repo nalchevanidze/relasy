@@ -1,7 +1,7 @@
 import { lastTag } from "./lib/git";
 import { Api } from "./lib/changelog/types";
 import { Github } from "./lib/gh";
-import { Config, loadConfig } from "./lib/config";
+import { loadConfig } from "./lib/config";
 import { setupEnv } from "./lib/utils";
 import { setupModule } from "./lib/module";
 import { renderChangelog } from "./lib/changelog";
@@ -11,7 +11,7 @@ export class Relasy extends Api {
   public static async load() {
     setupEnv();
     const config = await loadConfig();
-    const github = new Github(config.gh, config.user);
+    const github = new Github(config.gh);
     const module = setupModule(config.manager);
 
     return new Relasy(config, github, module);

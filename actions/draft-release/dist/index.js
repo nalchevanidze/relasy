@@ -45128,10 +45128,6 @@ var require_config = __commonJS({
       gh: z.string(),
       scope: z.record(z.string(), z.string()),
       pr: z.record(exports2.ChangeTypeSchema, z.string()).optional(),
-      user: z.object({
-        name: z.string(),
-        email: z.string().email()
-      }).optional(),
       manager: exports2.ManagerSchema
     });
     var loadConfig = async () => {
@@ -50939,7 +50935,7 @@ var require_dist = __commonJS({
       static async load() {
         (0, utils_1.setupEnv)();
         const config = await (0, config_1.loadConfig)();
-        const github = new gh_1.Github(config.gh, config.user);
+        const github = new gh_1.Github(config.gh);
         const module3 = (0, module_1.setupModule)(config.manager);
         return new _Relasy(config, github, module3);
       }

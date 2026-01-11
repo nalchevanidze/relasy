@@ -37,12 +37,6 @@ export const ConfigSchema = z.object({
   gh: z.string(),
   scope: z.record(z.string(), z.string()),
   pr: z.record(ChangeTypeSchema, z.string()).optional(),
-  user: z
-    .object({
-      name: z.string(),
-      email: z.string().email(),
-    })
-    .optional(),
   manager: ManagerSchema,
 });
 

@@ -59699,7 +59699,7 @@ var require_npm = __commonJS({
       }
       async setup() {
         await setup();
-        await (0, utils_1.exec)("npm run build");
+        await (0, utils_1.exec)("pnpm run build");
       }
       pkg(id) {
         return `https://www.npmjs.com/package/${id}`;

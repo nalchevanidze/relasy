@@ -7,8 +7,7 @@ export const main = async () => {
 
   const cli = new Command()
     .name("Relasy")
-    .description("Generate Automated Releases")
-    .version(easy.version());
+    .description("Generate Automated Releases");
 
   cli.command("changelog").action(async () => {
     await easy.changelog("changelog");

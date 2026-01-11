@@ -50814,7 +50814,8 @@ var require_npm = __commonJS({
         };
       }
       version() {
-        throw new Error("Method not implemented.");
+        const rootPkg = readJson("package.json");
+        return rootPkg.version;
       }
       async setup() {
         await setup();

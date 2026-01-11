@@ -1,6 +1,7 @@
 import fs from "node:fs";
 import fg from "fast-glob";
 import { Module } from "./types";
+import { exec } from "../utils";
 
 function readJson(p: string) {
   return JSON.parse(fs.readFileSync(p, "utf8"));
@@ -59,7 +60,9 @@ export class NpmModule implements Module {
   }
 
   next = async (isBreaking: boolean) => {
-    throw new Error("Method not implemented.");
+    await exec(
+      `npm version ${isBreaking ? "major" : "patch --no-git-tag-version"}`
+    );
   };
 
   async setup() {

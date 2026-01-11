@@ -31,9 +31,8 @@ const indent = (txt: string, n: number = 1) =>
 export class RenderAPI extends Api {
   private pkg = (key: string) => {
     const id = this.config.scope[key];
-    const pkg = this.config.pkg.replace("{{SCOPE}}", id);
-    return link(key, pkg);
-  }
+    return link(key, this.module.pkg(id));
+  };
 
   private change = ({
     number,

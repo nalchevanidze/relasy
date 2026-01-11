@@ -15,4 +15,8 @@ export class CustomModule implements Module {
   setup = async () => {
     await execVoid(this.config.setup);
   };
+
+  pkg(id: string): string {
+    return this.config.pkg.replace("{{SCOPE}}", id);
+  }
 }

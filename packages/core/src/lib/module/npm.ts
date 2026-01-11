@@ -69,4 +69,8 @@ export class NpmModule implements Module {
     await setup();
     await exec("npm run build");
   }
+  
+  pkg(id: string): string {
+    return `https://www.npmjs.com/package/${id}`;
+  }
 }

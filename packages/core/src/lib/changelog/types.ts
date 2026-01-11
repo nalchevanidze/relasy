@@ -1,5 +1,6 @@
 import { Github } from "../gh";
 import { ChangeType, Config } from "../config";
+import { Module } from "../module/types";
 
 export type Commit = {
   message: string;
@@ -22,5 +23,9 @@ export type Change = PR & {
 };
 
 export class Api {
-  constructor(protected config: Config, protected github: Github) {}
+  constructor(
+    protected config: Config,
+    protected github: Github,
+    protected module: Module
+  ) {}
 }

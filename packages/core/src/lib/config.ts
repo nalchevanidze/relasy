@@ -18,11 +18,18 @@ export const CustomManagerSchema = z.object({
   next: z.string(),
   version: z.string(),
   setup: z.string(),
+  pkg: z.string(),
+});
+
+export const NPMManagerSchema = z.object({
+  type: z.literal("npm")
 });
 
 export type CustomManager = z.infer<typeof CustomManagerSchema>;
 
-export const ManagerSchema = z.union([z.literal("npm"), CustomManagerSchema]);
+export type NPMManager = z.infer<typeof NPMManagerSchema>;
+
+export const ManagerSchema = z.union([NPMManagerSchema, CustomManagerSchema]);
 
 export type Manager = z.infer<typeof ManagerSchema>;
 
@@ -30,7 +37,6 @@ export const ConfigSchema = z.object({
   gh: z.string(),
   scope: z.record(z.string(), z.string()),
   pr: z.record(ChangeTypeSchema, z.string()).optional(),
-  pkg: z.string(),
   user: z
     .object({
       name: z.string(),

@@ -9,6 +9,7 @@ import { exit } from "./utils";
 import { Config, loadConfig } from "./config";
 import { NpmModule } from "./module/npm";
 import { Module } from "./module/types";
+import { CustomModule } from "./module/custom";
 
 const isBreaking = (changes: Change[]) =>
   Boolean(changes.find(propEq("type", "breaking")));
@@ -16,13 +17,17 @@ const isBreaking = (changes: Change[]) =>
 export class Relasy extends Api {
   private fetch: FetchApi;
   private render: RenderAPI;
-  public module: Module = new NpmModule();
 
   constructor(config: Config) {
     const github = new Github(config.gh, config.user);
-    super(config, github);
-    this.fetch = new FetchApi(config, github);
-    this.render = new RenderAPI(config, github);
+    const module =
+      config.manager.type === "npm"
+        ? new NpmModule()
+        : new CustomModule(config.manager);
+
+    super(config, github, module);
+    this.fetch = new FetchApi(config, github, module);
+    this.render = new RenderAPI(config, github, module);
   }
 
   public static async load() {

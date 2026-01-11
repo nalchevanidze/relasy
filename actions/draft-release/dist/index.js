@@ -26404,9 +26404,10 @@ var require_types = __commonJS({
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.Api = void 0;
     var Api = class {
-      constructor(config, github) {
+      constructor(config, github, module3) {
         this.config = config;
         this.github = github;
+        this.module = module3;
       }
     };
     exports2.Api = Api;
@@ -26548,8 +26549,7 @@ ${space(n)}`));
         super(...arguments);
         this.pkg = (key) => {
           const id = this.config.scope[key];
-          const pkg = this.config.pkg.replace("{{SCOPE}}", id);
-          return link(key, pkg);
+          return link(key, this.module.pkg(id));
         };
         this.change = ({ number, author, title, body, scopes }) => {
           const details = body ? indent(lines(["- <details>", indent(body, 2), "  </details>"]), 1) : "";
@@ -45197,7 +45197,7 @@ var require_config = __commonJS({
       return result;
     };
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.loadConfig = exports2.ConfigSchema = exports2.ManagerSchema = exports2.CustomManagerSchema = exports2.ChangeTypeSchema = void 0;
+    exports2.loadConfig = exports2.ConfigSchema = exports2.ManagerSchema = exports2.NPMManagerSchema = exports2.CustomManagerSchema = exports2.ChangeTypeSchema = void 0;
     var promises_1 = require("fs/promises");
     var z = __importStar(require_zod());
     exports2.ChangeTypeSchema = z.enum([
@@ -45211,14 +45211,17 @@ var require_config = __commonJS({
       type: z.literal("custom"),
       next: z.string(),
       version: z.string(),
-      setup: z.string()
+      setup: z.string(),
+      pkg: z.string()
     });
-    exports2.ManagerSchema = z.union([z.literal("npm"), exports2.CustomManagerSchema]);
+    exports2.NPMManagerSchema = z.object({
+      type: z.literal("npm")
+    });
+    exports2.ManagerSchema = z.union([exports2.NPMManagerSchema, exports2.CustomManagerSchema]);
     exports2.ConfigSchema = z.object({
       gh: z.string(),
       scope: z.record(z.string(), z.string()),
       pr: z.record(exports2.ChangeTypeSchema, z.string()).optional(),
-      pkg: z.string(),
       user: z.object({
         name: z.string(),
         email: z.string().email()
@@ -50822,8 +50825,38 @@ var require_npm = __commonJS({
         await setup();
         await (0, utils_1.exec)("npm run build");
       }
+      pkg(id) {
+        return `https://www.npmjs.com/package/${id}`;
+      }
     };
     exports2.NpmModule = NpmModule;
+  }
+});
+
+// ../../packages/core/dist/lib/module/custom.js
+var require_custom = __commonJS({
+  "../../packages/core/dist/lib/module/custom.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.CustomModule = void 0;
+    var utils_1 = require_utils3();
+    var CustomModule = class {
+      constructor(config) {
+        this.config = config;
+        this.version = () => (0, utils_1.exec)(this.config.version);
+        this.next = async (isBreaking) => {
+          const { next } = this.config;
+          return (0, utils_1.execVoid)(isBreaking ? `${next} -b` : next);
+        };
+        this.setup = async () => {
+          await (0, utils_1.execVoid)(this.config.setup);
+        };
+      }
+      pkg(id) {
+        return this.config.pkg.replace("{{SCOPE}}", id);
+      }
+    };
+    exports2.CustomModule = CustomModule;
   }
 });
 
@@ -50843,16 +50876,16 @@ var require_relasy = __commonJS({
     var utils_1 = require_utils3();
     var config_1 = require_config();
     var npm_1 = require_npm();
+    var custom_1 = require_custom();
     var isBreaking = (changes) => Boolean(changes.find((0, ramda_1.propEq)("type", "breaking")));
     var Relasy2 = class _Relasy extends types_1.Api {
       constructor(config) {
         const github = new gh_1.Github(config.gh, config.user);
-        super(config, github);
-        this.module = new npm_1.NpmModule();
-        this.version = () => this.module.version();
+        const module3 = config.manager.type === "npm" ? new npm_1.NpmModule() : new custom_1.CustomModule(config.manager);
+        super(config, github, module3);
         this.initialVersion = () => {
           const version = (0, git_1.lastTag)();
-          const projectVersion = this.version();
+          const projectVersion = this.module.version();
           if (version.replace(/^v/, "") !== projectVersion.replace(/^v/, "")) {
             throw Error(`versions does not match: ${version} ${projectVersion}`);
           }
@@ -50860,13 +50893,13 @@ var require_relasy = __commonJS({
         };
         this.open = async (body) => {
           this.github.setup();
-          this.github.release(await this.version(), body);
+          this.github.release(await this.module.version(), body);
         };
         this.genChangelog = async (save) => {
           const version = this.initialVersion();
           const changes = await this.fetch.changes(version);
           await this.module.next(isBreaking(changes));
-          const txt = await this.render.changes(this.version(), changes);
+          const txt = await this.render.changes(this.module.version(), changes);
           if (save) {
             await (0, promises_1.writeFile)(`./${save}.md`, txt, "utf8");
           }
@@ -50874,8 +50907,8 @@ var require_relasy = __commonJS({
         };
         this.changelog = async (save) => this.genChangelog(save).catch(utils_1.exit);
         this.release = () => this.genChangelog().then((txt) => this.module.setup().then(() => this.open(txt))).catch(utils_1.exit);
-        this.fetch = new fetch_1.FetchApi(config, github);
-        this.render = new render_1.RenderAPI(config, github);
+        this.fetch = new fetch_1.FetchApi(config, github, module3);
+        this.render = new render_1.RenderAPI(config, github, module3);
       }
       static async load() {
         return new _Relasy(await (0, config_1.loadConfig)());

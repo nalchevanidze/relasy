@@ -59800,10 +59800,8 @@ var require_dist = __commonJS({
       return utils_2.exit;
     } });
     var Relasy2 = class _Relasy extends types_1.Api {
-      constructor(config) {
-        const github = new gh_1.Github(config.gh, config.user);
-        const module3 = (0, module_1.setupModule)(config.manager);
-        super(config, github, module3);
+      constructor() {
+        super(...arguments);
         this.version = () => this.module.version();
         this.changelog = async () => {
           const version = (0, git_1.lastTag)();
@@ -59816,7 +59814,10 @@ var require_dist = __commonJS({
       }
       static async load() {
         (0, utils_1.setupEnv)();
-        return new _Relasy(await (0, config_1.loadConfig)());
+        const config = await (0, config_1.loadConfig)();
+        const github = new gh_1.Github(config.gh, config.user);
+        const module3 = (0, module_1.setupModule)(config.manager);
+        return new _Relasy(config, github, module3);
       }
     };
     exports2.Relasy = Relasy2;

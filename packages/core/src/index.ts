@@ -8,15 +8,13 @@ import { renderChangelog } from "./lib/changelog";
 export { exit } from "./lib/utils";
 
 export class Relasy extends Api {
-  constructor(config: Config) {
-    const github = new Github(config.gh, config.user);
-    const module = setupModule(config.manager);
-    super(config, github, module);
-  }
-
   public static async load() {
     setupEnv();
-    return new Relasy(await loadConfig());
+    const config = await loadConfig();
+    const github = new Github(config.gh, config.user);
+    const module = setupModule(config.manager);
+
+    return new Relasy(config, github, module);
   }
 
   public version = () => this.module.version();

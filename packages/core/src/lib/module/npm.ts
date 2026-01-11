@@ -67,5 +67,6 @@ export class NpmModule implements Module {
 
   async setup() {
     await setup();
+    await exec("npm run build");
   }
 }

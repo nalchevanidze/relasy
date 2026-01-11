@@ -50767,6 +50767,7 @@ var require_npm = __commonJS({
     exports2.NpmModule = exports2.setup = void 0;
     var node_fs_1 = __importDefault(require("node:fs"));
     var fast_glob_1 = __importDefault(require_out4());
+    var utils_1 = require_utils3();
     function readJson(p) {
       return JSON.parse(node_fs_1.default.readFileSync(p, "utf8"));
     }
@@ -50810,7 +50811,7 @@ var require_npm = __commonJS({
     var NpmModule = class {
       constructor() {
         this.next = async (isBreaking) => {
-          throw new Error("Method not implemented.");
+          await (0, utils_1.exec)(`npm version ${isBreaking ? "major" : "patch --no-git-tag-version"}`);
         };
       }
       version() {
@@ -50819,6 +50820,7 @@ var require_npm = __commonJS({
       }
       async setup() {
         await setup();
+        await (0, utils_1.exec)("npm run build");
       }
     };
     exports2.NpmModule = NpmModule;

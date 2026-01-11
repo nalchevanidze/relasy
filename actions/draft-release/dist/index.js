@@ -26432,11 +26432,11 @@ var require_utils3 = __commonJS({
     exports2.exec = exec;
     var execVoid = (cmd) => (0, node_util_1.promisify)(node_child_process_1.exec)(cmd, options).then(({ stdout }) => console.log(stdout));
     exports2.execVoid = execVoid;
-    var exit = (error) => {
+    var exit2 = (error) => {
       console.log(error.message);
       process.exit(1);
     };
-    exports2.exit = exit;
+    exports2.exit = exit2;
   }
 });
 
@@ -50873,7 +50873,6 @@ var require_relasy = __commonJS({
     var ramda_1 = require_src();
     var gh_1 = require_gh();
     var promises_1 = require("fs/promises");
-    var utils_1 = require_utils3();
     var config_1 = require_config();
     var npm_1 = require_npm();
     var custom_1 = require_custom();
@@ -50892,11 +50891,7 @@ var require_relasy = __commonJS({
           }
           return version;
         };
-        this.open = async (body) => {
-          this.github.setup();
-          this.github.release(await this.module.version(), body);
-        };
-        this.genChangelog = async (save) => {
+        this.changelog = async (save) => {
           const version = this.initialVersion();
           const changes = await this.fetch.changes(version);
           await this.module.next(isBreaking(changes));
@@ -50906,8 +50901,6 @@ var require_relasy = __commonJS({
           }
           return txt;
         };
-        this.changelog = async (save) => this.genChangelog(save).catch(utils_1.exit);
-        this.release = () => this.genChangelog().then((txt) => this.module.setup().then(() => this.open(txt))).catch(utils_1.exit);
         this.fetch = new fetch_1.FetchApi(config, github, module3);
         this.render = new render_1.RenderAPI(config, github, module3);
       }
@@ -50949,7 +50942,11 @@ var import_core2 = __toESM(require_dist());
 async function run() {
   try {
     const easy = await import_core2.Relasy.load();
-    await easy.release();
+    const open = async (body) => {
+      easy.github.setup();
+      easy.github.release(await easy.module.version(), body);
+    };
+    await easy.changelog().then((txt) => easy.module.setup().then(() => open(txt))).catch(import_core2.exit);
     (0, import_core.info)("Draft release finished.");
   } catch (e) {
     (0, import_core.setFailed)(e?.message ?? String(e));

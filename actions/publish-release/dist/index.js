@@ -59749,7 +59749,6 @@ var require_relasy = __commonJS({
     var ramda_1 = require_src();
     var gh_1 = require_gh();
     var promises_1 = require("fs/promises");
-    var utils_1 = require_utils6();
     var config_1 = require_config();
     var npm_1 = require_npm();
     var custom_1 = require_custom();
@@ -59768,11 +59767,7 @@ var require_relasy = __commonJS({
           }
           return version;
         };
-        this.open = async (body) => {
-          this.github.setup();
-          this.github.release(await this.module.version(), body);
-        };
-        this.genChangelog = async (save) => {
+        this.changelog = async (save) => {
           const version = this.initialVersion();
           const changes = await this.fetch.changes(version);
           await this.module.next(isBreaking(changes));
@@ -59782,8 +59777,6 @@ var require_relasy = __commonJS({
           }
           return txt;
         };
-        this.changelog = async (save) => this.genChangelog(save).catch(utils_1.exit);
-        this.release = () => this.genChangelog().then((txt) => this.module.setup().then(() => this.open(txt))).catch(utils_1.exit);
         this.fetch = new fetch_1.FetchApi(config, github, module3);
         this.render = new render_1.RenderAPI(config, github, module3);
       }

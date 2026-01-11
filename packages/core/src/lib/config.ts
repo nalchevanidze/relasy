@@ -22,7 +22,7 @@ export const CustomManagerSchema = z.object({
 });
 
 export const NPMManagerSchema = z.object({
-  type: z.literal("npm")
+  type: z.literal("npm"),
 });
 
 export type CustomManager = z.infer<typeof CustomManagerSchema>;

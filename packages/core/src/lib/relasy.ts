@@ -5,10 +5,8 @@ import { Change, Api } from "./changelog/types";
 import { propEq } from "ramda";
 import { Github } from "./gh";
 import { writeFile } from "fs/promises";
-import { exit } from "./utils";
 import { Config, loadConfig } from "./config";
 import { NpmModule } from "./module/npm";
-import { Module } from "./module/types";
 import { CustomModule } from "./module/custom";
 
 const isBreaking = (changes: Change[]) =>
@@ -58,12 +56,7 @@ export class Relasy extends Api {
     return version;
   };
 
-  private open = async (body: string) => {
-    this.github.setup();
-    this.github.release(await this.module.version(), body);
-  };
-
-  private genChangelog = async (save?: string) => {
+  public changelog = async (save?: string) => {
     const version = this.initialVersion();
     const changes = await this.fetch.changes(version);
     await this.module.next(isBreaking(changes));
@@ -75,12 +68,4 @@ export class Relasy extends Api {
 
     return txt;
   };
-
-  public changelog = async (save?: string) =>
-    this.genChangelog(save).catch(exit);
-
-  public release = () =>
-    this.genChangelog()
-      .then((txt) => this.module.setup().then(() => this.open(txt)))
-      .catch(exit);
 }

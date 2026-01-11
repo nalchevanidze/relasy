@@ -5,9 +5,8 @@ import { Api, isBreaking } from "./changelog/types";
 import { Github } from "./gh";
 import { writeFile } from "fs/promises";
 import { Config, loadConfig } from "./config";
-import { NpmModule } from "./module/npm";
-import { CustomModule } from "./module/custom";
 import { setupEnv } from "./utils";
+import { setupModule } from "./module";
 
 export class Relasy extends Api {
   private fetch: FetchApi;
@@ -15,11 +14,7 @@ export class Relasy extends Api {
 
   constructor(config: Config) {
     const github = new Github(config.gh, config.user);
-    const module =
-      config.manager.type === "npm"
-        ? new NpmModule()
-        : new CustomModule(config.manager);
-
+    const module = setupModule(config.manager);
     super(config, github, module);
     this.fetch = new FetchApi(config, github, module);
     this.render = new RenderAPI(config, github, module);

@@ -26402,7 +26402,8 @@ var require_types = __commonJS({
   "../../packages/core/dist/lib/changelog/types.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.Api = void 0;
+    exports2.isBreaking = exports2.Api = void 0;
+    var ramda_1 = require_src();
     var Api = class {
       constructor(config, github, module3) {
         this.config = config;
@@ -26411,6 +26412,8 @@ var require_types = __commonJS({
       }
     };
     exports2.Api = Api;
+    var isBreaking = (changes) => Boolean(changes.find((0, ramda_1.propEq)("type", "breaking")));
+    exports2.isBreaking = isBreaking;
   }
 });
 
@@ -26432,11 +26435,11 @@ var require_utils3 = __commonJS({
     exports2.exec = exec;
     var execVoid = (cmd) => (0, node_util_1.promisify)(node_child_process_1.exec)(cmd, options).then(({ stdout }) => console.log(stdout));
     exports2.execVoid = execVoid;
-    var exit2 = (error) => {
+    var exit = (error) => {
       console.log(error.message);
       process.exit(1);
     };
-    exports2.exit = exit2;
+    exports2.exit = exit;
   }
 });
 
@@ -50870,13 +50873,11 @@ var require_relasy = __commonJS({
     var render_1 = require_render();
     var git_1 = require_git();
     var types_1 = require_types();
-    var ramda_1 = require_src();
     var gh_1 = require_gh();
     var promises_1 = require("fs/promises");
     var config_1 = require_config();
     var npm_1 = require_npm();
     var custom_1 = require_custom();
-    var isBreaking = (changes) => Boolean(changes.find((0, ramda_1.propEq)("type", "breaking")));
     var Relasy2 = class _Relasy extends types_1.Api {
       constructor(config) {
         const github = new gh_1.Github(config.gh, config.user);
@@ -50894,7 +50895,7 @@ var require_relasy = __commonJS({
         this.changelog = async (save) => {
           const version = this.initialVersion();
           const changes = await this.fetch.changes(version);
-          await this.module.next(isBreaking(changes));
+          await this.module.next((0, types_1.isBreaking)(changes));
           const txt = await this.render.changes(this.module.version(), changes);
           if (save) {
             await (0, promises_1.writeFile)(`./${save}.md`, txt, "utf8");
@@ -50942,11 +50943,10 @@ var import_core2 = __toESM(require_dist());
 async function run() {
   try {
     const easy = await import_core2.Relasy.load();
-    const open = async (body) => {
-      easy.github.setup();
-      easy.github.release(await easy.module.version(), body);
-    };
-    await easy.changelog().then((txt) => easy.module.setup().then(() => open(txt))).catch(import_core2.exit);
+    const body = await easy.changelog();
+    await easy.module.setup();
+    easy.github.setup();
+    await easy.github.release(await easy.module.version(), body);
     (0, import_core.info)("Draft release finished.");
   } catch (e) {
     (0, import_core.setFailed)(e?.message ?? String(e));

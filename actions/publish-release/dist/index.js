@@ -35278,7 +35278,8 @@ var require_types = __commonJS({
   "../../packages/core/dist/lib/changelog/types.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.Api = void 0;
+    exports2.isBreaking = exports2.Api = void 0;
+    var ramda_1 = require_src();
     var Api = class {
       constructor(config, github, module3) {
         this.config = config;
@@ -35287,6 +35288,8 @@ var require_types = __commonJS({
       }
     };
     exports2.Api = Api;
+    var isBreaking = (changes) => Boolean(changes.find((0, ramda_1.propEq)("type", "breaking")));
+    exports2.isBreaking = isBreaking;
   }
 });
 
@@ -59746,13 +59749,11 @@ var require_relasy = __commonJS({
     var render_1 = require_render();
     var git_1 = require_git();
     var types_1 = require_types();
-    var ramda_1 = require_src();
     var gh_1 = require_gh();
     var promises_1 = require("fs/promises");
     var config_1 = require_config();
     var npm_1 = require_npm();
     var custom_1 = require_custom();
-    var isBreaking = (changes) => Boolean(changes.find((0, ramda_1.propEq)("type", "breaking")));
     var Relasy2 = class _Relasy extends types_1.Api {
       constructor(config) {
         const github = new gh_1.Github(config.gh, config.user);
@@ -59770,7 +59771,7 @@ var require_relasy = __commonJS({
         this.changelog = async (save) => {
           const version = this.initialVersion();
           const changes = await this.fetch.changes(version);
-          await this.module.next(isBreaking(changes));
+          await this.module.next((0, types_1.isBreaking)(changes));
           const txt = await this.render.changes(this.module.version(), changes);
           if (save) {
             await (0, promises_1.writeFile)(`./${save}.md`, txt, "utf8");

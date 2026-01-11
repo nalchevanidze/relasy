@@ -1,6 +1,7 @@
 import { Github } from "../gh";
 import { ChangeType, Config } from "../config";
 import { Module } from "../module/types";
+import { propEq } from "ramda";
 
 export type Commit = {
   message: string;
@@ -29,3 +30,6 @@ export class Api {
     public module: Module
   ) {}
 }
+
+export const isBreaking = (changes: Change[]) =>
+  Boolean(changes.find(propEq("type", "breaking")));

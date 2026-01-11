@@ -1,16 +1,13 @@
 import { FetchApi } from "./changelog/fetch";
 import { RenderAPI } from "./changelog/render";
 import { lastTag } from "./git";
-import { Change, Api } from "./changelog/types";
-import { propEq } from "ramda";
+import { Api, isBreaking } from "./changelog/types";
 import { Github } from "./gh";
 import { writeFile } from "fs/promises";
 import { Config, loadConfig } from "./config";
 import { NpmModule } from "./module/npm";
 import { CustomModule } from "./module/custom";
-
-const isBreaking = (changes: Change[]) =>
-  Boolean(changes.find(propEq("type", "breaking")));
+import { setupEnv } from "./utils";
 
 export class Relasy extends Api {
   private fetch: FetchApi;
@@ -29,17 +26,7 @@ export class Relasy extends Api {
   }
 
   public static async load() {
-    const token = process.env.GITHUB_TOKEN || process.env.GITHUB_API_TOKEN;
-    if (!token) throw new Error("Missing GITHUB_TOKEN (or GITHUB_API_TOKEN).");
-
-    // provide both names for compatibility
-    process.env.GITHUB_TOKEN = process.env.GITHUB_TOKEN || token;
-    process.env.GITHUB_API_TOKEN = process.env.GITHUB_API_TOKEN || token;
-
-    // run in the checked-out repo
-    const cwd = process.env.GITHUB_WORKSPACE || process.cwd();
-    process.chdir(cwd);
-
+    setupEnv();
     return new Relasy(await loadConfig());
   }
 

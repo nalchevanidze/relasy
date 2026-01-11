@@ -29,11 +29,9 @@ export class Relasy extends Api {
     return new Relasy(await loadConfig());
   }
 
-  public version = () => this.module.version();
-
   private initialVersion = () => {
     const version = lastTag();
-    const projectVersion = this.version();
+    const projectVersion = this.module.version();
 
     if (version.replace(/^v/, "") !== projectVersion.replace(/^v/, "")) {
       throw Error(`versions does not match: ${version} ${projectVersion}`);
@@ -44,14 +42,14 @@ export class Relasy extends Api {
 
   private open = async (body: string) => {
     this.github.setup();
-    this.github.release(await this.version(), body);
+    this.github.release(await this.module.version(), body);
   };
 
   private genChangelog = async (save?: string) => {
     const version = this.initialVersion();
     const changes = await this.fetch.changes(version);
     await this.module.next(isBreaking(changes));
-    const txt = await this.render.changes(this.version(), changes);
+    const txt = await this.render.changes(this.module.version(), changes);
 
     if (save) {
       await writeFile(`./${save}.md`, txt, "utf8");

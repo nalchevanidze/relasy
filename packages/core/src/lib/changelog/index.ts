@@ -3,7 +3,7 @@ import { RenderAPI } from "./render";
 import { isBreaking } from "./types";
 import { Github } from "../gh";
 import { Config } from "../config";
-import { Module } from "../module/types";
+import { Module } from "../project/types";
 
 export const renderChangelog = async (
   config: Config,

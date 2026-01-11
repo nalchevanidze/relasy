@@ -1,6 +1,6 @@
 import { Github } from "../gh";
 import { ChangeType, Config } from "../config";
-import { Module } from "../module/types";
+import { Module } from "../project/types";
 import { propEq } from "ramda";
 
 export type Commit = {

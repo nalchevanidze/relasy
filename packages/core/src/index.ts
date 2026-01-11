@@ -3,7 +3,7 @@ import { Api } from "./lib/changelog/types";
 import { Github } from "./lib/gh";
 import { loadConfig } from "./lib/config";
 import { setupEnv } from "./lib/utils";
-import { setupModule } from "./lib/module";
+import { setupToolchain } from "./lib/project";
 import { renderChangelog } from "./lib/changelog";
 export { exit } from "./lib/utils";
 
@@ -12,9 +12,9 @@ export class Relasy extends Api {
     setupEnv();
     const config = await loadConfig();
     const github = new Github(config.gh);
-    const module = setupModule(config.manager);
+    const toolchain = setupToolchain(config.toolchain);
 
-    return new Relasy(config, github, module);
+    return new Relasy(config, github, toolchain);
   }
 
   public version = () => this.module.version();

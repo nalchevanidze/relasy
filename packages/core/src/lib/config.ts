@@ -37,7 +37,7 @@ export type Manager = z.infer<typeof ManagerSchema>;
 export const ConfigSchema = z.object({
   scope: z.record(z.string(), z.string()),
   pr: z.record(ChangeTypeSchema, z.string()).optional(),
-  manager: ManagerSchema,
+  project: ManagerSchema,
 });
 
 type RawConfig = z.infer<typeof ConfigSchema>;

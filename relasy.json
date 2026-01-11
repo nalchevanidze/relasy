@@ -2,7 +2,7 @@
   "scope": {
     "core": "relasy/core"
   },
-  "manager": {
+  "project": {
     "type": "npm"
   }
 }

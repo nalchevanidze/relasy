@@ -54010,7 +54010,7 @@ var require_config = __commonJS({
     exports2.ConfigSchema = z.object({
       scope: z.record(z.string(), z.string()),
       pr: z.record(exports2.ChangeTypeSchema, z.string()).optional(),
-      manager: exports2.ManagerSchema
+      toolchain: exports2.ManagerSchema
     });
     var loadConfig = async () => {
       const data = await (0, promises_1.readFile)("./relasy.json", "utf8").then(JSON.parse);
@@ -54033,9 +54033,9 @@ var require_config = __commonJS({
   }
 });
 
-// ../../packages/core/dist/lib/module/custom.js
+// ../../packages/core/dist/lib/toolchain/custom.js
 var require_custom = __commonJS({
-  "../../packages/core/dist/lib/module/custom.js"(exports2) {
+  "../../packages/core/dist/lib/toolchain/custom.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.CustomModule = void 0;
@@ -59572,9 +59572,9 @@ var require_out4 = __commonJS({
   }
 });
 
-// ../../packages/core/dist/lib/module/npm.js
+// ../../packages/core/dist/lib/toolchain/npm.js
 var require_npm = __commonJS({
-  "../../packages/core/dist/lib/module/npm.js"(exports2) {
+  "../../packages/core/dist/lib/toolchain/npm.js"(exports2) {
     "use strict";
     var __importDefault = exports2 && exports2.__importDefault || function(mod) {
       return mod && mod.__esModule ? mod : { "default": mod };
@@ -59646,16 +59646,16 @@ var require_npm = __commonJS({
   }
 });
 
-// ../../packages/core/dist/lib/module/index.js
-var require_module = __commonJS({
-  "../../packages/core/dist/lib/module/index.js"(exports2) {
+// ../../packages/core/dist/lib/toolchain/index.js
+var require_toolchain = __commonJS({
+  "../../packages/core/dist/lib/toolchain/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.setupModule = void 0;
+    exports2.setupToolchain = void 0;
     var custom_1 = require_custom();
     var npm_1 = require_npm();
-    var setupModule = (manager) => manager.type === "npm" ? new npm_1.NpmModule() : new custom_1.CustomModule(manager);
-    exports2.setupModule = setupModule;
+    var setupToolchain = (manager) => manager.type === "npm" ? new npm_1.NpmModule() : new custom_1.CustomModule(manager);
+    exports2.setupToolchain = setupToolchain;
   }
 });
 
@@ -59797,7 +59797,7 @@ var require_dist = __commonJS({
     var gh_1 = require_gh();
     var config_1 = require_config();
     var utils_1 = require_utils6();
-    var module_1 = require_module();
+    var toolchain_1 = require_toolchain();
     var changelog_1 = require_changelog();
     var utils_2 = require_utils6();
     Object.defineProperty(exports2, "exit", { enumerable: true, get: function() {
@@ -59820,8 +59820,8 @@ var require_dist = __commonJS({
         (0, utils_1.setupEnv)();
         const config = await (0, config_1.loadConfig)();
         const github = new gh_1.Github(config.gh);
-        const module3 = (0, module_1.setupModule)(config.manager);
-        return new _Relasy(config, github, module3);
+        const toolchain = (0, toolchain_1.setupToolchain)(config.toolchain);
+        return new _Relasy(config, github, toolchain);
       }
     };
     exports2.Relasy = Relasy2;

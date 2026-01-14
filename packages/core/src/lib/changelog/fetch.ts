@@ -8,6 +8,12 @@ const parseNumber = (msg: string) => {
   return num ? parseInt(num, 10) : undefined;
 };
 
+
+const prefixMap = {
+  changeTypes: "type",
+  scopes: "scope",
+}
+
 export const parseLabels = <T extends LabelType>(
   config: Config,
   t: T,
@@ -16,7 +22,7 @@ export const parseLabels = <T extends LabelType>(
   labels.flatMap((label: string) => {
     const [prefix, key, ...rest] = label.split("/");
 
-    if (prefix !== t) return [];
+    if (prefix !== prefixMap[t]) return [];
 
     const values: Record<string, unknown> = config[t];
 

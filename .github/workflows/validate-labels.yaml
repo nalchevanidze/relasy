@@ -25,3 +25,5 @@ jobs:
 
       - name: Validate PR Labels 
         uses: nalchevanidze/relasy/actions/validate-pr-labels@validte-labels
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

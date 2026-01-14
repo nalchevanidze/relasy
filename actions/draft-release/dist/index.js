@@ -50788,7 +50788,7 @@ var require_fetch2 = __commonJS({
   "../../packages/core/dist/lib/changelog/fetch.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.FetchApi = exports2.parseLabels = void 0;
+    exports2.FetchApi = exports2.parseLabels = exports2.parseLabel = void 0;
     var ramda_1 = require_src();
     var types_1 = require_types();
     var git_1 = require_git();
@@ -50800,17 +50800,22 @@ var require_fetch2 = __commonJS({
       changeTypes: "type",
       scopes: "scope"
     };
-    var parseLabels = (config, t, labels) => labels.flatMap((label) => {
-      const [prefix, key, ...rest] = label.split("/");
-      if (prefix !== prefixMap[t])
-        return [];
+    var parseLabel = (config, t, label) => {
       const values = config[t];
+      const [prefix, key, ...rest] = label.split("/");
+      if (key === void 0 && t === "changeTypes" && values[prefix] !== void 0) {
+        return prefix;
+      }
+      if (prefix !== prefixMap[t])
+        ;
       if (rest.length || !key || !values[key]) {
         const fields = Object.keys(values).join(", ");
         throw new Error(`invalid label ${label}. key ${key} could not be found on object with fields: ${fields}`);
       }
-      return [key];
-    });
+      return key;
+    };
+    exports2.parseLabel = parseLabel;
+    var parseLabels = (config, t, labels) => labels.map((label) => (0, exports2.parseLabel)(config, t, label)).filter((x) => x !== void 0);
     exports2.parseLabels = parseLabels;
     var FetchApi = class extends types_1.Api {
       constructor() {

@@ -1,32 +1,60 @@
 import { isNil, map, pluck, reject, uniq } from "ramda";
 import { Change, Api, Commit, PR } from "./types";
 import { commitsAfter } from "../git";
-import { Config, LabelType } from "../config";
+import { ChangeType, Config, LabelType } from "../config";
 
 const parseNumber = (msg: string) => {
   const num = / \(#(?<prNumber>[0-9]+)\)$/m.exec(msg)?.groups?.prNumber;
   return num ? parseInt(num, 10) : undefined;
 };
 
+const prefixMap = {
+  changeTypes: "type",
+  scopes: "scope",
+};
+
+export const parseLabel = <T extends LabelType>(
+  config: Config,
+  t: T,
+  label: string
+): keyof Config[T] | undefined => {
+  const values: Record<string, unknown> = config[t];
+  const [prefix, key, ...rest] = label.split("/");
+
+  if (rest.length) {
+    throw new Error(
+      `invalid label ${label}. only one '/' is allowed in labels for ${t}`
+    );
+  }
+
+  if (key === undefined) {
+    if (values[prefix] && t === "changeTypes") return prefix as keyof Config[T];
+
+    return undefined;
+  }
+
+  if (prefix !== prefixMap[t]) return undefined;
+
+  if (values[key]) return key as keyof Config[T];
+
+
+  const fields = Object.keys(values).join(", ");
+
+  throw new Error(
+    `invalid label ${label}. key ${key} could not be found on object with fields: ${fields}`
+  );
+};
+
+export const parseLabels = <T extends LabelType>(
+  config: Config,
+  t: T,
+  labels: string[]
+): Array<keyof Config[T]> =>
+  labels
+    .map((label) => parseLabel(config, t, label))
+    .filter((x) => x !== undefined) as Array<keyof Config[T]>;
+
 export class FetchApi extends Api {
-  parseLabels = <T extends LabelType>(t: T, labels: string[]) =>
-    labels.flatMap((label: string) => {
-      const [prefix, key, ...rest] = label.split("/");
-
-      if (prefix !== t) return [];
-
-      const values: Record<string, unknown> = this.config[t];
-
-      if (rest.length || !key || !values[key]) {
-        const fields = Object.keys(values).join(", ");
-        throw new Error(
-          `invalid label ${label}. key ${key} could not be found on object with fields: ${fields}`
-        );
-      }
-
-      return [key] as Array<keyof Config[T]>;
-    });
-
   private commits = this.github.batch<Commit>(
     (i) =>
       `object(oid: "${i}") {
@@ -68,8 +96,10 @@ export class FetchApi extends Api {
 
           return {
             ...pr,
-            type: this.parseLabels("pr", labels).find(Boolean) ?? "chore",
-            scopes: this.parseLabels("scope", labels),
+            type:
+              parseLabels(this.config, "changeTypes", labels).find(Boolean) ??
+              "chore",
+            scopes: parseLabels(this.config, "scopes", labels),
           };
         })
       );

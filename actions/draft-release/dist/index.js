@@ -51029,7 +51029,7 @@ var require_dist = __commonJS({
         };
         Object.entries(this.config.changeTypes).forEach(add("changeTypes"));
         Object.entries(this.config.scopes).forEach(add("scopes"));
-        console.log(`changes: ${JSON.stringify([...map.keys()])}`);
+        console.log(`changes: ${JSON.stringify([...map.values()])}`);
         return [...map.values()];
       }
       parseLabels(t, labels) {

@@ -56506,8 +56506,8 @@ var COLORS = {
   // light gray
   chore: "D4DADF",
   // light gray
-  pkg: "D4C5F9"
-  // lavender (package scope / grouping)
+  pkg: "0AA6A6"
+  // teal (package scope / grouping)
 };
 var createLabel = (type, existing, name) => ({
   name: `${type}/${name}`,

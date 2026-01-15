@@ -50826,10 +50826,13 @@ var require_labels = __commonJS({
       throw new Error(`invalid label ${original}. key ${sub} could not be found on object with fields: ${fields}`);
     };
     exports2.parseLabel = parseLabel;
+    function normalizeColor(color) {
+      return color.replace(/^#/, "").trim().toUpperCase();
+    }
     var createLabel = (type, key, longName, existing) => ({
       type,
       key,
-      color: colors[key] || colors.pkg,
+      color: normalizeColor(colors[key] || colors.pkg),
       description: type === "changeTypes" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
       name: `${prefixMap[type]}/${key}`,
       existing

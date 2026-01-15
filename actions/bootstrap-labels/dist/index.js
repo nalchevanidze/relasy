@@ -56337,10 +56337,13 @@ var require_labels = __commonJS({
       throw new Error(`invalid label ${original}. key ${sub} could not be found on object with fields: ${fields}`);
     };
     exports2.parseLabel = parseLabel;
+    function normalizeColor(color) {
+      return color.replace(/^#/, "").trim().toUpperCase();
+    }
     var createLabel2 = (type, key, longName, existing) => ({
       type,
       key,
-      color: colors[key] || colors.pkg,
+      color: normalizeColor(colors[key] || colors.pkg),
       description: type === "changeTypes" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
       name: `${prefixMap[type]}/${key}`,
       existing
@@ -56531,17 +56534,14 @@ var import_core = __toESM(require_core());
 var import_github = __toESM(require_github());
 var import_core2 = __toESM(require_dist());
 var { owner, repo } = import_github.context.repo;
-function normalizeColor(color) {
-  return color.replace(/^#/, "").trim().toUpperCase();
-}
 async function ensureLabel(octokit, label) {
   try {
-    if (label.existingName) {
+    if (label.existing) {
       await octokit.rest.issues.updateLabel({
         owner,
         repo,
-        name: label.existingName,
-        color: normalizeColor(label.color),
+        name: label.existing,
+        color: label.color,
         description: label.description,
         new_name: label.name
         // keep same, but explicit
@@ -56574,7 +56574,9 @@ async function run() {
     const map = /* @__PURE__ */ new Map();
     for (const l of labels) {
       const label = relasy.parseLabel(l.name);
-      map.set(l.name, { name: l.name });
+      if (label) {
+        map.set(l.name, label);
+      }
     }
     const changeTypes = Object.entries(relasy.config.changeTypes).map(
       ([name, longName]) => (0, import_core2.createLabel)("changeTypes", name, longName)

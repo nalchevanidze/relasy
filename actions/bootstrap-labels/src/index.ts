@@ -4,21 +4,17 @@ import { Relasy, Label, createLabel } from "@relasy/core";
 
 const { owner, repo } = context.repo;
 
-function normalizeColor(color: string): string {
-  return color.replace(/^#/, "").trim().toUpperCase();
-}
-
 export async function ensureLabel(
   octokit: ReturnType<typeof getOctokit>,
   label: Label
 ) {
   try {
-    if (label.existingName) {
+    if (label.existing) {
       await octokit.rest.issues.updateLabel({
         owner,
         repo,
-        name: label.existingName,
-        color: normalizeColor(label.color),
+        name: label.existing,
+        color: label.color,
         description: label.description,
         new_name: label.name, // keep same, but explicit
       });
@@ -43,23 +39,18 @@ async function run() {
     const relasy = await Relasy.load();
     const octokit = getOctokit(process.env.GITHUB_TOKEN || "");
 
-    const labels = await octokit.paginate(
-      octokit.rest.issues.listLabelsForRepo,
-      {
+    const labels = (
+      await octokit.paginate(octokit.rest.issues.listLabelsForRepo, {
         owner,
         repo,
         per_page: 100,
-      }
-    );
+      })
+    )
+      .map((l) => relasy.parseLabel(l.name))
+      .filter((l) => l !== undefined);
 
-    // Map by name for quick lookup
-    const map = new Map<string, { name: string }>();
-    for (const l of labels) {
-      const label = relasy.parseLabel(l.name);
-      if (label) {
-        map.set(l.name, label);
-      }
-    }
+    const map = new Map<string, Label>();
+    labels.forEach((l) => map.set(l.name, l));
 
     const changeTypes = Object.entries(relasy.config.changeTypes).map(
       ([name, longName]) => createLabel("changeTypes", name, longName)

@@ -64,6 +64,10 @@ export const parseLabel = <T extends LabelType>(
   );
 };
 
+function normalizeColor(color: string): string {
+  return color.replace(/^#/, "").trim().toUpperCase();
+}
+
 export const createLabel = (
   type: LabelType,
   key: string,
@@ -72,7 +76,7 @@ export const createLabel = (
 ): Label => ({
   type,
   key,
-  color: colors[key] || colors.pkg,
+  color: normalizeColor(colors[key] || colors.pkg),
   description:
     type === "changeTypes"
       ? `Relasy type label for versioning & changelog: ${longName}`

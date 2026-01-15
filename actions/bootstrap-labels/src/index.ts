@@ -4,40 +4,6 @@ import { Relasy } from "@relasy/core";
 
 const { owner, repo } = context.repo;
 
-type Label = {
-  name: string;
-  color: string; // hex without #
-  description?: string;
-  existingName?: string;
-};
-
-const COLORS: Record<string, string> = {
-  major: "B60205", // red (GitHub danger)
-  breaking: "B60205", // red (same as major)
-  feature: "0E8A16", // green
-  fix: "1D76DB", // blue
-  minor: "D4DADF", // light gray
-  chore: "D4DADF", // light gray
-  pkg: "c2e0c6", // teal (package scope / grouping)
-};
-
-export const createLabel = (
-  type: string,
-  existing: Map<string, { name: string }>,
-  name: string,
-  longName: string
-): Label => ({
-  name: `${type}/${name}`,
-  color: COLORS[name] || COLORS.pkg,
-  description:
-    type === "type"
-      ? `Relasy type label for versioning & changelog: ${longName}`
-      : `Relasy scope label for grouping changes: "${longName}"`,
-  existingName: existing.has(`${type}/${name}`)
-    ? existing.get(`${type}/${name}`)?.name
-    : undefined,
-});
-
 function normalizeColor(color: string): string {
   return color.replace(/^#/, "").trim().toUpperCase();
 }
@@ -52,17 +18,10 @@ export async function listExistingLabels(
   });
 
   // Map by name for quick lookup
-  const map = new Map<
-    string,
-    { name: string; color: string; description: string | null | undefined }
-  >();
+  const map = new Map<string, { name: string }>();
 
   for (const l of labels) {
-    map.set(l.name, {
-      name: l.name,
-      color: (l.color || "").toUpperCase(),
-      description: l.description,
-    });
+    map.set(l.name, { name: l.name });
   }
 
   return map;

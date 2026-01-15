@@ -13,3 +13,5 @@ jobs:
 
       - name: Create/ensure required labels exist
         uses: nalchevanidze/relasy/actions/bootstrap-labels@bootstrap
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

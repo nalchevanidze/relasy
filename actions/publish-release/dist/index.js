@@ -59665,7 +59665,7 @@ var require_labels = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.parseLabels = exports2.createLabel = void 0;
-    var COLORS = {
+    var colors = {
       major: "B60205",
       breaking: "B60205",
       feature: "0E8A16",
@@ -59675,36 +59675,42 @@ var require_labels = __commonJS({
       pkg: "c2e0c6"
       // teal (package scope / grouping)
     };
-    var createLabel = (type, existing, name, longName) => ({
-      name: `${type}/${name}`,
-      color: COLORS[name] || COLORS.pkg,
-      description: type === "type" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
-      existingName: existing.has(`${type}/${name}`) ? existing.get(`${type}/${name}`)?.name : void 0
-    });
-    exports2.createLabel = createLabel;
     var prefixMap = {
       changeTypes: "type",
       scopes: "scope"
     };
-    var parseLabelId = (config, t, label) => {
-      const values = config[t];
-      const [prefix, key, ...rest] = label.split("/");
+    var parseLabel = (config, original) => {
+      const [prefix, sub, ...rest] = original.replaceAll(":", "").replaceAll(" ", "").split("/");
       if (rest.length) {
-        throw new Error(`invalid label ${label}. only one '/' is allowed in labels for ${t}`);
+        throw new Error(`invalid label ${original}. only one '/' is allowed in labels for ${sub}`);
       }
-      if (key === void 0) {
-        if (values[prefix] && t === "changeTypes")
-          return prefix;
+      if (sub === void 0) {
+        const name = prefix;
+        const longName = config.changeTypes[name];
+        if (longName)
+          return (0, exports2.createLabel)("changeTypes", name, longName, original);
         return void 0;
       }
-      if (prefix !== prefixMap[t])
-        return void 0;
-      if (values[key])
-        return key;
-      const fields = Object.keys(values).join(", ");
-      throw new Error(`invalid label ${label}. key ${key} could not be found on object with fields: ${fields}`);
+      if (!(prefix in config))
+        return;
+      const type = prefix;
+      const longNames = config[type];
+      if (longNames[sub]) {
+        return (0, exports2.createLabel)(type, sub, longNames[sub], original);
+      }
+      const fields = Object.keys(longNames).join(", ");
+      throw new Error(`invalid label ${original}. key ${sub} could not be found on object with fields: ${fields}`);
     };
-    var parseLabels = (config, t, labels) => labels.map((label) => parseLabelId(config, t, label)).filter((x) => x !== void 0);
+    var createLabel = (type, key, longName, existing) => ({
+      type,
+      key,
+      color: colors[key] || colors.pkg,
+      description: type === "changeTypes" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
+      name: `${prefixMap[type]}/${key}`,
+      existing
+    });
+    exports2.createLabel = createLabel;
+    var parseLabels = (config, target, labels) => labels.map((label) => parseLabel(config, label)).filter((label) => label?.type === target).map((label) => label.key);
     exports2.parseLabels = parseLabels;
   }
 });

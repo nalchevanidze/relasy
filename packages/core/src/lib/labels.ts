@@ -1,7 +1,8 @@
-import { Config, LabelType } from "./config";
+import { ChangeType, Config, LabelType } from "./config";
 
 export type Label = {
   type: LabelType;
+  key: string;
   name: string;
   color: string; // hex without #
   description?: string;
@@ -23,53 +24,6 @@ const prefixMap = {
   scopes: "scope",
 };
 
-export const createLabel = (
-  type: LabelType,
-  name: string,
-  longName: string,
-  existing?: string
-): Label => ({
-  type,
-  name: `${prefixMap[type]}/${name}`,
-  color: colors[name] || colors.pkg,
-  description:
-    type === "changeTypes"
-      ? `Relasy type label for versioning & changelog: ${longName}`
-      : `Relasy scope label for grouping changes: "${longName}"`,
-  existing: existing,
-});
-
-const parseLabelId = <T extends LabelType>(
-  config: Config,
-  t: T,
-  label: string
-): keyof Config[T] | undefined => {
-  const values: Record<string, unknown> = config[t];
-  const [prefix, key, ...rest] = label.split("/");
-
-  if (rest.length) {
-    throw new Error(
-      `invalid label ${label}. only one '/' is allowed in labels for ${t}`
-    );
-  }
-
-  if (key === undefined) {
-    if (values[prefix] && t === "changeTypes") return prefix as keyof Config[T];
-
-    return undefined;
-  }
-
-  if (prefix !== prefixMap[t]) return undefined;
-
-  if (values[key]) return key as keyof Config[T];
-
-  const fields = Object.keys(values).join(", ");
-
-  throw new Error(
-    `invalid label ${label}. key ${key} could not be found on object with fields: ${fields}`
-  );
-};
-
 const parseLabel = <T extends LabelType>(
   config: Config,
   original: string
@@ -86,10 +40,10 @@ const parseLabel = <T extends LabelType>(
   }
 
   if (sub === undefined) {
-    const name = prefix as keyof Config["changeTypes"];
+    const name = prefix as ChangeType;
     const longName = config.changeTypes[name];
 
-    if (longName) return createLabel("type", name, longName, original);
+    if (longName) return createLabel("changeTypes", name, longName, original);
 
     return undefined;
   }
@@ -97,24 +51,42 @@ const parseLabel = <T extends LabelType>(
   if (!(prefix in config)) return;
 
   const type = prefix as LabelType;
-  const values: Record<string, unknown> = config[type];
+  const longNames: Record<string, string> = config[type];
 
-  if (values[sub]) {
-    return createLabel(prefixMap[type], sub, values[sub] as string, original);
+  if (longNames[sub]) {
+    return createLabel(type, sub, longNames[sub], original);
   }
 
-  const fields = Object.keys(values).join(", ");
+  const fields = Object.keys(longNames).join(", ");
 
   throw new Error(
     `invalid label ${original}. key ${sub} could not be found on object with fields: ${fields}`
   );
 };
 
+export const createLabel = (
+  type: LabelType,
+  key: string,
+  longName: string,
+  existing?: string
+): Label => ({
+  type,
+  key,
+  color: colors[key] || colors.pkg,
+  description:
+    type === "changeTypes"
+      ? `Relasy type label for versioning & changelog: ${longName}`
+      : `Relasy scope label for grouping changes: "${longName}"`,
+  name: `${prefixMap[type]}/${key}`,
+  existing: existing,
+});
+
 export const parseLabels = <T extends LabelType>(
   config: Config,
-  t: T,
+  target: T,
   labels: string[]
 ): Array<keyof Config[T]> =>
   labels
-    .map((label) => parseLabelId(config, t, label))
-    .filter((x) => x !== undefined) as Array<keyof Config[T]>;
+    .map((label) => parseLabel(config, label))
+    .filter((label): label is Label => label?.type === target)
+    .map((label) => label.key as keyof Config[T]);

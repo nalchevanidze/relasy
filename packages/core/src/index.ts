@@ -41,6 +41,8 @@ export class Relasy extends Api {
       }
     });
 
+    console.log(`existing: ${JSON.stringify([...map.values()])}`);
+
     const add =
       (t: LabelType) =>
       ([n, longName]: [string, string]) => {

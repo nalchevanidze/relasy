@@ -56527,6 +56527,7 @@ var require_dist = __commonJS({
             map.set(parsed.name, parsed);
           }
         });
+        console.log(`existing: ${JSON.stringify([...map.values()])}`);
         const add = (t) => ([n, longName]) => {
           const l = (0, labels_1.createLabel)(t, n, longName);
           if (!map.has(l.name)) {

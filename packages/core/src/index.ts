@@ -53,6 +53,7 @@ export class Relasy extends Api {
     Object.entries(this.config.changeTypes).forEach(add("changeTypes"));
     Object.entries(this.config.scopes).forEach(add("scopes"));
 
+    console.log(`Using remote: ${[...map.keys()]}`);
     return [...map.values()];
   }
 

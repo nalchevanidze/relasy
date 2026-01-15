@@ -56326,6 +56326,7 @@ var require_labels = __commonJS({
       // teal (package scope / grouping)
     };
     var parseLabel = (config, original) => {
+      console.log(`parsing label: ${original}`);
       const [prefix, sub, ...rest] = original.replaceAll(":", "").replaceAll(" ", "").split("/");
       if (rest.length) {
         throw new Error(`invalid label ${original}. only one '/' is allowed in labels for ${sub}`);

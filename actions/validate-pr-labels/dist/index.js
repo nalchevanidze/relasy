@@ -56513,6 +56513,24 @@ var require_dist = __commonJS({
         const project = (0, project_1.setupToolchain)(config.project);
         return new _Relasy(config, github, project);
       }
+      labels(ls) {
+        const map = /* @__PURE__ */ new Map();
+        ls.forEach((l) => {
+          const parsed = (0, labels_1.parseLabel)(this.config, l);
+          if (parsed) {
+            map.set(l, parsed);
+          }
+        });
+        const add = (t) => ([n, longName]) => {
+          const l = (0, labels_1.createLabel)(t, n, longName);
+          if (!map.has(l.name)) {
+            l.existing = map.get(l.name)?.name;
+          }
+        };
+        Object.entries(this.config.changeTypes).forEach(add("changeTypes"));
+        Object.entries(this.config.scopes).forEach(add("scopes"));
+        return [...map.values()];
+      }
       parseLabels(t, labels) {
         return (0, labels_1.parseLabels)(this.config, t, labels);
       }

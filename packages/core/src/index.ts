@@ -1,11 +1,11 @@
 import { lastTag, remote } from "./lib/git";
 import { Api } from "./lib/changelog/types";
 import { Github } from "./lib/gh";
-import { LabelType, loadConfig } from "./lib/config";
+import { ChangeType, LabelType, loadConfig } from "./lib/config";
 import { setupEnv } from "./lib/utils";
 import { setupToolchain } from "./lib/project";
 import { renderChangelog } from "./lib/changelog";
-import { parseLabel, parseLabels } from "./lib/labels";
+import { createLabel, Label, parseLabel, parseLabels } from "./lib/labels";
 export { exit } from "./lib/utils";
 export { Label, createLabel } from "./lib/labels";
 
@@ -31,6 +31,30 @@ export class Relasy extends Api {
 
     return renderChangelog(this.config, this.module, this.github, version);
   };
+
+  public labels(ls: string[]) {
+    const map = new Map<string, Label>();
+    ls.forEach((l) => {
+      const parsed = parseLabel(this.config, l);
+      if (parsed) {
+        map.set(l, parsed);
+      }
+    });
+
+    const add =
+      (t: LabelType) =>
+      ([n, longName]: [string, string]) => {
+        const l = createLabel(t, n, longName);
+        if (!map.has(l.name)) {
+          l.existing = map.get(l.name)?.name;
+        }
+      };
+
+    Object.entries(this.config.changeTypes).forEach(add("changeTypes"));
+    Object.entries(this.config.scopes).forEach(add("scopes"));
+
+    return [...map.values()];
+  }
 
   public parseLabels<T extends LabelType>(t: T, labels: string[]) {
     return parseLabels(this.config, t, labels);

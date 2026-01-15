@@ -56300,20 +56300,29 @@ var require_labels = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.parseLabels = exports2.createLabel = exports2.parseLabel = void 0;
-    var printNameMap = {
-      changeTypes: "type",
-      scopes: "\u{1F4E6}"
+    var emojies = {
+      package: "\u{1F4E6}",
+      breaking: "\u{1F4A5}",
+      feature: "\u2728",
+      fix: "\u{1F41B}",
+      chore: "\u{1F9F9}",
+      major: "\u{1F6A8}"
     };
     var parseNameMap = {
       type: "changeTypes",
       scope: "scopes",
-      "\u{1F4E6}": "scopes"
+      "\u{1F4E6}": "scopes",
+      "\u{1F4A5}": "changeTypes",
+      "\u2728": "changeTypes",
+      "\u{1F41B}": "changeTypes",
+      "\u{1F9F9}": "changeTypes",
+      "\u{1F6A8}": "changeTypes"
     };
     var printName = (type, key) => {
       if (type === "changeTypes") {
-        return `${printNameMap[type]}/${key}`;
+        return `${emojies[key]} ${key}`;
       }
-      return `${printNameMap[type]} ${key}`;
+      return `\u{1F4E6} ${key}`;
     };
     var colors = {
       major: "B60205",

@@ -9,25 +9,32 @@ export type Label = {
   existing?: string;
 };
 
-type AllowedLabelTypes = "type" | "scope" | "📦";
-
-const printNameMap: Record<LabelType, AllowedLabelTypes> = {
-  changeTypes: "type",
-  scopes: "📦",
+const emojies: Record<string, string> = {
+  package: "📦",
+  breaking: "💥",
+  feature: "✨",
+  fix: "🐛",
+  chore: "🧹",
+  major: "🚨",
 };
 
 const parseNameMap: Record<string, LabelType> = {
-  type: "changeTypes",
   scope: "scopes",
+  type: "changeTypes",
   "📦": "scopes",
+  "💥": "changeTypes",
+  "✨": "changeTypes",
+  "🐛": "changeTypes",
+  "🧹": "changeTypes",
+  "🚨": "changeTypes",
 };
 
 const printName = (type: LabelType, key: string) => {
   if (type === "changeTypes") {
-    return `${printNameMap[type]}/${key}`;
+    return `${emojies[key]} ${key}`;
   }
 
-  return `${printNameMap[type]} ${key}`;
+  return `📦 ${key}`;
 };
 
 const colors: Record<string, string> = {

@@ -51,14 +51,14 @@ export const parseLabel = <T extends LabelType>(
   config: Config,
   original: string
 ): Label | undefined => {
-  const [prefix, sub, ...rest] = original
+  const [prefix, sub, ...rest] = original.trim()
     .replaceAll(":", "/")
     .replaceAll(" ", "/")
     .split("/");
 
   if (rest.length) {
     throw new Error(
-      `invalid label ${original}. only one '/' is allowed in labels for ${sub}`
+      `invalid Label "${original}". only one '/' is allowed in labels for ${sub}`
     );
   }
 

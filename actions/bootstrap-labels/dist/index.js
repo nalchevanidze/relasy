@@ -56494,14 +56494,18 @@ var import_github = __toESM(require_github());
 var import_core2 = __toESM(require_dist());
 var { owner, repo } = import_github.context.repo;
 var COLORS = {
+  major: "B60205",
+  // red
   breaking: "B60205",
   // red
   feature: "0E8A16",
   // green
   fix: "1D76DB",
   // blue
-  minor: "FBCA04"
+  minor: "FBCA04",
   // yellow
+  chore: "006B75"
+  // teal
 };
 var createLabel = (type, existing, name) => ({
   name: `${type}/${name}`,

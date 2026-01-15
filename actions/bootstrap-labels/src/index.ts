@@ -12,10 +12,12 @@ type Label = {
 };
 
 const COLORS: Record<string, string> = {
+  major: "B60205", // red
   breaking: "B60205", // red
   feature: "0E8A16", // green
   fix: "1D76DB", // blue
   minor: "FBCA04", // yellow
+  chore: "006B75", // teal
 };
 
 export const createLabel = (

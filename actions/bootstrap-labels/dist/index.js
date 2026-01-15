@@ -56495,19 +56495,19 @@ var import_core2 = __toESM(require_dist());
 var { owner, repo } = import_github.context.repo;
 var COLORS = {
   major: "B60205",
-  // red (GitHub "danger" red)
+  // red (GitHub danger)
   breaking: "B60205",
   // red (same as major)
   feature: "0E8A16",
-  // green (feature / enhancement)
+  // green
   fix: "1D76DB",
-  // blue (bug fix)
+  // blue
   minor: "D4DADF",
-  // light gray (minor / low-attention)
+  // light gray
   chore: "D4DADF",
-  // light gray (chore / maintenance / boring)
-  pkg: "C8A165"
-  // kraft brown / cardboard (package scope)
+  // light gray
+  pkg: "D4C5F9"
+  // lavender (package scope / grouping)
 };
 var createLabel = (type, existing, name) => ({
   name: `${type}/${name}`,

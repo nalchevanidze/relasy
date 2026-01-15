@@ -12,16 +12,13 @@ type Label = {
 };
 
 const COLORS: Record<string, string> = {
-  major: "B60205", // red (GitHub "danger" red)
+  major: "B60205",    // red (GitHub danger)
   breaking: "B60205", // red (same as major)
-
-  feature: "0E8A16", // green (feature / enhancement)
-  fix: "1D76DB", // blue (bug fix)
-
-  minor: "D4DADF", // light gray (minor / low-attention)
-  chore: "D4DADF", // light gray (chore / maintenance / boring)
-
-  pkg: "C8A165", // kraft brown / cardboard (package scope)
+  feature: "0E8A16",  // green
+  fix: "1D76DB",      // blue
+  minor: "D4DADF",    // light gray
+  chore: "D4DADF",    // light gray
+  pkg: "D4C5F9",      // lavender (package scope / grouping)
 };
 
 export const createLabel = (

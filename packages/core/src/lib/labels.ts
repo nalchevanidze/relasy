@@ -52,8 +52,8 @@ export const parseLabel = <T extends LabelType>(
   original: string
 ): Label | undefined => {
   const [prefix, sub, ...rest] = original
-    .replaceAll(":", "")
-    .replaceAll(" ", "")
+    .replaceAll(":", "/")
+    .replaceAll(" ", "/")
     .split("/");
 
   if (rest.length) {

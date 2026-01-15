@@ -46,7 +46,7 @@ export class Relasy extends Api {
       ([n, longName]: [string, string]) => {
         const l = createLabel(t, n, longName);
         if (!map.has(l.name)) {
-          l.existing = map.get(l.name)?.name;
+          map.set(l.name, l);
         }
       };
 

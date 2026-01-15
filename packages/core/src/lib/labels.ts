@@ -9,6 +9,22 @@ export type Label = {
   existing?: string;
 };
 
+type AllowedLabelTypes = "type" | "scope" | "📦";
+
+const printNameMap: Record<LabelType, AllowedLabelTypes> = {
+  changeTypes: "type",
+  scopes: "📦",
+};
+
+const parseNameMap: Record<AllowedLabelTypes, LabelType> = {
+  type: "changeTypes",
+  scope: "scopes",
+  "📦": "scopes",
+};
+
+const printName = (type: LabelType, key: string) =>
+  `${printNameMap[type]}/${key}`;
+
 const colors: Record<string, string> = {
   major: "B60205", // red (GitHub danger)
   breaking: "B60205", // red (same as major)
@@ -17,11 +33,6 @@ const colors: Record<string, string> = {
   minor: "D4DADF", // light gray
   chore: "D4DADF", // light gray
   pkg: "c2e0c6", // teal (package scope / grouping)
-};
-
-const prefixMap = {
-  changeTypes: "type",
-  scopes: "scope",
 };
 
 export const parseLabel = <T extends LabelType>(
@@ -50,7 +61,7 @@ export const parseLabel = <T extends LabelType>(
 
   if (!(prefix in config)) return;
 
-  const type = prefix as LabelType;
+  const type = parseNameMap[prefix as AllowedLabelTypes] as LabelType;
   const longNames: Record<string, string> = config[type];
 
   if (longNames[sub]) {
@@ -81,7 +92,7 @@ export const createLabel = (
     type === "changeTypes"
       ? `Relasy type label for versioning & changelog: ${longName}`
       : `Relasy scope label for grouping changes: "${longName}"`,
-  name: `${prefixMap[type]}/${key}`,
+  name: printName(type, key),
   existing: existing,
 });
 

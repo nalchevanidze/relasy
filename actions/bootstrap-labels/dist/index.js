@@ -22630,9 +22630,9 @@ var require_lib3 = __commonJS({
         throw new TypeError(`${value} is not a legal HTTP header value`);
       }
     }
-    function find(map2, name) {
+    function find(map, name) {
       name = name.toLowerCase();
-      for (const key in map2) {
+      for (const key in map) {
         if (key.toLowerCase() === name) {
           return key;
         }
@@ -26112,8 +26112,8 @@ var require_map2 = __commonJS({
     var _xmap = require_xmap();
     var curryN = require_curryN2();
     var keys = require_keys();
-    var map2 = /* @__PURE__ */ _curry2(
-      /* @__PURE__ */ _dispatchable(["fantasy-land/map", "map"], _xmap, function map3(fn, functor) {
+    var map = /* @__PURE__ */ _curry2(
+      /* @__PURE__ */ _dispatchable(["fantasy-land/map", "map"], _xmap, function map2(fn, functor) {
         switch (Object.prototype.toString.call(functor)) {
           case "[object Function]":
             return curryN(functor.length, function() {
@@ -26129,7 +26129,7 @@ var require_map2 = __commonJS({
         }
       })
     );
-    module2.exports = map2;
+    module2.exports = map;
   }
 });
 
@@ -26175,10 +26175,10 @@ var require_prop = __commonJS({
 var require_pluck = __commonJS({
   "../../node_modules/.pnpm/ramda@0.28.0/node_modules/ramda/src/pluck.js"(exports2, module2) {
     var _curry2 = require_curry2();
-    var map2 = require_map2();
+    var map = require_map2();
     var prop = require_prop();
     var pluck = /* @__PURE__ */ _curry2(function pluck2(p, list) {
-      return map2(prop(p), list);
+      return map(prop(p), list);
     });
     module2.exports = pluck;
   }
@@ -26331,12 +26331,12 @@ var require_ap = __commonJS({
     var _concat = require_concat();
     var _curry2 = require_curry2();
     var _reduce = require_reduce();
-    var map2 = require_map2();
+    var map = require_map2();
     var ap = /* @__PURE__ */ _curry2(function ap2(applyF, applyX) {
       return typeof applyX["fantasy-land/ap"] === "function" ? applyX["fantasy-land/ap"](applyF) : typeof applyF.ap === "function" ? applyF.ap(applyX) : typeof applyF === "function" ? function(x) {
         return applyF(x)(applyX(x));
       } : _reduce(function(acc, f) {
-        return _concat(acc, map2(f, applyX));
+        return _concat(acc, map(f, applyX));
       }, [], applyF);
     });
     module2.exports = ap;
@@ -26672,11 +26672,11 @@ var require_liftN = __commonJS({
     var _reduce = require_reduce();
     var ap = require_ap();
     var curryN = require_curryN2();
-    var map2 = require_map2();
+    var map = require_map2();
     var liftN = /* @__PURE__ */ _curry2(function liftN2(arity, fn) {
       var lifted = curryN(arity, fn);
       return curryN(arity, function() {
-        return _reduce(ap, map2(lifted, arguments[0]), Array.prototype.slice.call(arguments, 1));
+        return _reduce(ap, map(lifted, arguments[0]), Array.prototype.slice.call(arguments, 1));
       });
     });
     module2.exports = liftN;
@@ -26806,9 +26806,9 @@ var require_xchain = __commonJS({
   "../../node_modules/.pnpm/ramda@0.28.0/node_modules/ramda/src/internal/_xchain.js"(exports2, module2) {
     var _curry2 = require_curry2();
     var _flatCat = require_flatCat();
-    var map2 = require_map2();
+    var map = require_map2();
     var _xchain = /* @__PURE__ */ _curry2(function _xchain2(f, xf) {
-      return map2(f, _flatCat(xf));
+      return map(f, _flatCat(xf));
     });
     module2.exports = _xchain;
   }
@@ -26821,7 +26821,7 @@ var require_chain = __commonJS({
     var _dispatchable = require_dispatchable();
     var _makeFlat = require_makeFlat();
     var _xchain = require_xchain();
-    var map2 = require_map2();
+    var map = require_map2();
     var chain = /* @__PURE__ */ _curry2(
       /* @__PURE__ */ _dispatchable(["fantasy-land/chain", "chain"], _xchain, function chain2(fn, monad) {
         if (typeof monad === "function") {
@@ -26829,7 +26829,7 @@ var require_chain = __commonJS({
             return fn(monad(x))(x);
           };
         }
-        return _makeFlat(false)(map2(fn, monad));
+        return _makeFlat(false)(map(fn, monad));
       })
     );
     module2.exports = chain;
@@ -27656,11 +27656,11 @@ var require_cond = __commonJS({
   "../../node_modules/.pnpm/ramda@0.28.0/node_modules/ramda/src/cond.js"(exports2, module2) {
     var _arity = require_arity();
     var _curry1 = require_curry1();
-    var map2 = require_map2();
+    var map = require_map2();
     var max = require_max();
     var reduce = require_reduce2();
     var cond = /* @__PURE__ */ _curry1(function cond2(pairs) {
-      var arity = reduce(max, 0, map2(function(pair) {
+      var arity = reduce(max, 0, map(function(pair) {
         return pair[0].length;
       }, pairs));
       return _arity(arity, function() {
@@ -29610,11 +29610,11 @@ var require_length = __commonJS({
 var require_lens = __commonJS({
   "../../node_modules/.pnpm/ramda@0.28.0/node_modules/ramda/src/lens.js"(exports2, module2) {
     var _curry2 = require_curry2();
-    var map2 = require_map2();
+    var map = require_map2();
     var lens = /* @__PURE__ */ _curry2(function lens2(getter, setter) {
       return function(toFunctorFn) {
         return function(target) {
-          return map2(function(focus) {
+          return map(function(focus) {
             return setter(focus, target);
           }, toFunctorFn(getter(target)));
         };
@@ -30800,12 +30800,12 @@ var require_sequence = __commonJS({
   "../../node_modules/.pnpm/ramda@0.28.0/node_modules/ramda/src/sequence.js"(exports2, module2) {
     var _curry2 = require_curry2();
     var ap = require_ap();
-    var map2 = require_map2();
+    var map = require_map2();
     var prepend = require_prepend();
     var reduceRight = require_reduceRight();
     var sequence = /* @__PURE__ */ _curry2(function sequence2(of, traversable) {
       return typeof traversable.sequence === "function" ? traversable.sequence(of) : reduceRight(function(x, acc) {
-        return ap(map2(prepend, x), acc);
+        return ap(map(prepend, x), acc);
       }, of([]), traversable);
     });
     module2.exports = sequence;
@@ -31238,10 +31238,10 @@ var require_transpose = __commonJS({
 var require_traverse = __commonJS({
   "../../node_modules/.pnpm/ramda@0.28.0/node_modules/ramda/src/traverse.js"(exports2, module2) {
     var _curry3 = require_curry3();
-    var map2 = require_map2();
+    var map = require_map2();
     var sequence = require_sequence();
     var traverse = /* @__PURE__ */ _curry3(function traverse2(of, f, traversable) {
-      return typeof traversable["fantasy-land/traverse"] === "function" ? traversable["fantasy-land/traverse"](f, of) : typeof traversable.traverse === "function" ? traversable.traverse(f, of) : sequence(of, map2(f, traversable));
+      return typeof traversable["fantasy-land/traverse"] === "function" ? traversable["fantasy-land/traverse"](f, of) : typeof traversable.traverse === "function" ? traversable.traverse(f, of) : sequence(of, map(f, traversable));
     });
     module2.exports = traverse;
   }
@@ -31575,10 +31575,10 @@ var require_whereEq = __commonJS({
   "../../node_modules/.pnpm/ramda@0.28.0/node_modules/ramda/src/whereEq.js"(exports2, module2) {
     var _curry2 = require_curry2();
     var equals = require_equals2();
-    var map2 = require_map2();
+    var map = require_map2();
     var where = require_where();
     var whereEq = /* @__PURE__ */ _curry2(function whereEq2(spec, testObj) {
-      return where(map2(equals, spec), testObj);
+      return where(map(equals, spec), testObj);
     });
     module2.exports = whereEq;
   }
@@ -45766,12 +45766,12 @@ var require_axios = __commonJS({
         Response,
         fetch2
       ];
-      let len = seeds.length, i = len, seed, target, map2 = seedCache;
+      let len = seeds.length, i = len, seed, target, map = seedCache;
       while (i--) {
         seed = seeds[i];
-        target = map2.get(seed);
-        target === void 0 && map2.set(seed, target = i ? /* @__PURE__ */ new Map() : factory(env));
-        map2 = target;
+        target = map.get(seed);
+        target === void 0 && map.set(seed, target = i ? /* @__PURE__ */ new Map() : factory(env));
+        map = target;
       }
       return target;
     };
@@ -46806,8 +46806,8 @@ var require_errors2 = __commonJS({
     var en_js_1 = __importDefault(require_en());
     exports2.defaultErrorMap = en_js_1.default;
     var overrideErrorMap = en_js_1.default;
-    function setErrorMap(map2) {
-      overrideErrorMap = map2;
+    function setErrorMap(map) {
+      overrideErrorMap = map;
     }
     function getErrorMap() {
       return overrideErrorMap;
@@ -46843,8 +46843,8 @@ var require_parseUtil = __commonJS({
       }
       let errorMessage = "";
       const maps = errorMaps.filter((m) => !!m).slice().reverse();
-      for (const map2 of maps) {
-        errorMessage = map2(fullIssue, { data, defaultError: errorMessage }).message;
+      for (const map of maps) {
+        errorMessage = map(fullIssue, { data, defaultError: errorMessage }).message;
       }
       return {
         ...issueData,
@@ -56295,6 +56295,16 @@ var require_labels = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.parseLabels = exports2.createLabel = exports2.parseLabel = void 0;
+    var printNameMap = {
+      changeTypes: "type",
+      scopes: "\u{1F4E6}"
+    };
+    var parseNameMap = {
+      type: "changeTypes",
+      scope: "scopes",
+      "\u{1F4E6}": "scopes"
+    };
+    var printName = (type, key) => `${printNameMap[type]}/${key}`;
     var colors = {
       major: "B60205",
       breaking: "B60205",
@@ -56304,10 +56314,6 @@ var require_labels = __commonJS({
       chore: "D4DADF",
       pkg: "c2e0c6"
       // teal (package scope / grouping)
-    };
-    var prefixMap = {
-      changeTypes: "type",
-      scopes: "scope"
     };
     var parseLabel = (config, original) => {
       const [prefix, sub, ...rest] = original.replaceAll(":", "").replaceAll(" ", "").split("/");
@@ -56323,7 +56329,7 @@ var require_labels = __commonJS({
       }
       if (!(prefix in config))
         return;
-      const type = prefix;
+      const type = parseNameMap[prefix];
       const longNames = config[type];
       if (longNames[sub]) {
         return (0, exports2.createLabel)(type, sub, longNames[sub], original);
@@ -56340,7 +56346,7 @@ var require_labels = __commonJS({
       key,
       color: normalizeColor(colors[key] || colors.pkg),
       description: type === "changeTypes" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
-      name: `${prefixMap[type]}/${key}`,
+      name: printName(type, key),
       existing
     });
     exports2.createLabel = createLabel2;
@@ -56509,22 +56515,22 @@ var require_dist = __commonJS({
         return new _Relasy(config, github, project);
       }
       labels(ls) {
-        const map2 = /* @__PURE__ */ new Map();
+        const map = /* @__PURE__ */ new Map();
         ls.forEach((l) => {
           const parsed = (0, labels_1.parseLabel)(this.config, l);
           if (parsed) {
-            map2.set(l, parsed);
+            map.set(l, parsed);
           }
         });
         const add = (t) => ([n, longName]) => {
           const l = (0, labels_1.createLabel)(t, n, longName);
-          if (!map2.has(l.name)) {
-            l.existing = map2.get(l.name)?.name;
+          if (!map.has(l.name)) {
+            l.existing = map.get(l.name)?.name;
           }
         };
         Object.entries(this.config.changeTypes).forEach(add("changeTypes"));
         Object.entries(this.config.scopes).forEach(add("scopes"));
-        return [...map2.values()];
+        return [...map.values()];
       }
       parseLabels(t, labels) {
         return (0, labels_1.parseLabels)(this.config, t, labels);
@@ -56546,23 +56552,24 @@ async function run() {
   try {
     const relasy = await import_core2.Relasy.load();
     const octokit = (0, import_github.getOctokit)(process.env.GITHUB_TOKEN || "");
-    const labels = await octokit.paginate(octokit.rest.issues.listLabelsForRepo, {
-      owner,
-      repo,
-      per_page: 100
-    });
+    const labels = await octokit.paginate(
+      octokit.rest.issues.listLabelsForRepo,
+      {
+        owner,
+        repo,
+        per_page: 100
+      }
+    );
     Promise.all(
-      relasy.labels(labels).map(async (label) => {
-        const existing = map.get(label.name);
-        if (existing?.existing) {
+      relasy.labels(labels.map((l) => l.name)).map(async (label) => {
+        if (label?.existing) {
           return octokit.rest.issues.updateLabel({
             owner,
             repo,
-            name: existing.existing,
+            name: label.existing,
             color: label.color,
             description: label.description,
             new_name: label.name
-            // keep same, but explicit
           });
         }
         await octokit.rest.issues.createLabel({

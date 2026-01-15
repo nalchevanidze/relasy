@@ -59665,6 +59665,16 @@ var require_labels = __commonJS({
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.parseLabels = exports2.createLabel = exports2.parseLabel = void 0;
+    var printNameMap = {
+      changeTypes: "type",
+      scopes: "\u{1F4E6}"
+    };
+    var parseNameMap = {
+      type: "changeTypes",
+      scope: "scopes",
+      "\u{1F4E6}": "scopes"
+    };
+    var printName = (type, key) => `${printNameMap[type]}/${key}`;
     var colors = {
       major: "B60205",
       breaking: "B60205",
@@ -59674,10 +59684,6 @@ var require_labels = __commonJS({
       chore: "D4DADF",
       pkg: "c2e0c6"
       // teal (package scope / grouping)
-    };
-    var prefixMap = {
-      changeTypes: "type",
-      scopes: "scope"
     };
     var parseLabel = (config, original) => {
       const [prefix, sub, ...rest] = original.replaceAll(":", "").replaceAll(" ", "").split("/");
@@ -59693,7 +59699,7 @@ var require_labels = __commonJS({
       }
       if (!(prefix in config))
         return;
-      const type = prefix;
+      const type = parseNameMap[prefix];
       const longNames = config[type];
       if (longNames[sub]) {
         return (0, exports2.createLabel)(type, sub, longNames[sub], original);
@@ -59710,7 +59716,7 @@ var require_labels = __commonJS({
       key,
       color: normalizeColor(colors[key] || colors.pkg),
       description: type === "changeTypes" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
-      name: `${prefixMap[type]}/${key}`,
+      name: printName(type, key),
       existing
     });
     exports2.createLabel = createLabel;

@@ -1,6 +1,6 @@
 import { setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
-import { Relasy } from "@relasy/core";
+import { Relasy, Label } from "@relasy/core";
 
 const { owner, repo } = context.repo;
 

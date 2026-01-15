@@ -1,6 +1,6 @@
 import { Config, LabelType } from "./config";
 
-type Label = {
+export type Label = {
   name: string;
   color: string; // hex without #
   description?: string;
@@ -39,7 +39,7 @@ const prefixMap = {
   scopes: "scope",
 };
 
-export const parseLabel = <T extends LabelType>(
+const parseLabelId = <T extends LabelType>(
   config: Config,
   t: T,
   label: string
@@ -76,5 +76,5 @@ export const parseLabels = <T extends LabelType>(
   labels: string[]
 ): Array<keyof Config[T]> =>
   labels
-    .map((label) => parseLabel(config, t, label))
+    .map((label) => parseLabelId(config, t, label))
     .filter((x) => x !== undefined) as Array<keyof Config[T]>;

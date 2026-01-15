@@ -56294,24 +56294,34 @@ var require_project2 = __commonJS({
   }
 });
 
-// ../../packages/core/dist/lib/changelog/fetch.js
-var require_fetch2 = __commonJS({
-  "../../packages/core/dist/lib/changelog/fetch.js"(exports2) {
+// ../../packages/core/dist/lib/labels.js
+var require_labels = __commonJS({
+  "../../packages/core/dist/lib/labels.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.FetchApi = exports2.parseLabels = exports2.parseLabel = void 0;
-    var ramda_1 = require_src();
-    var types_1 = require_types();
-    var git_1 = require_git();
-    var parseNumber = (msg) => {
-      const num = / \(#(?<prNumber>[0-9]+)\)$/m.exec(msg)?.groups?.prNumber;
-      return num ? parseInt(num, 10) : void 0;
+    exports2.parseLabels = exports2.createLabel = void 0;
+    var COLORS = {
+      major: "B60205",
+      breaking: "B60205",
+      feature: "0E8A16",
+      fix: "1D76DB",
+      minor: "D4DADF",
+      chore: "D4DADF",
+      pkg: "c2e0c6"
+      // teal (package scope / grouping)
     };
+    var createLabel2 = (type, existing, name, longName) => ({
+      name: `${type}/${name}`,
+      color: COLORS[name] || COLORS.pkg,
+      description: type === "type" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
+      existingName: existing.has(`${type}/${name}`) ? existing.get(`${type}/${name}`)?.name : void 0
+    });
+    exports2.createLabel = createLabel2;
     var prefixMap = {
       changeTypes: "type",
       scopes: "scope"
     };
-    var parseLabel = (config, t, label) => {
+    var parseLabelId = (config, t, label) => {
       const values = config[t];
       const [prefix, key, ...rest] = label.split("/");
       if (rest.length) {
@@ -56329,9 +56339,25 @@ var require_fetch2 = __commonJS({
       const fields = Object.keys(values).join(", ");
       throw new Error(`invalid label ${label}. key ${key} could not be found on object with fields: ${fields}`);
     };
-    exports2.parseLabel = parseLabel;
-    var parseLabels = (config, t, labels) => labels.map((label) => (0, exports2.parseLabel)(config, t, label)).filter((x) => x !== void 0);
+    var parseLabels = (config, t, labels) => labels.map((label) => parseLabelId(config, t, label)).filter((x) => x !== void 0);
     exports2.parseLabels = parseLabels;
+  }
+});
+
+// ../../packages/core/dist/lib/changelog/fetch.js
+var require_fetch2 = __commonJS({
+  "../../packages/core/dist/lib/changelog/fetch.js"(exports2) {
+    "use strict";
+    Object.defineProperty(exports2, "__esModule", { value: true });
+    exports2.FetchApi = void 0;
+    var ramda_1 = require_src();
+    var types_1 = require_types();
+    var git_1 = require_git();
+    var labels_1 = require_labels();
+    var parseNumber = (msg) => {
+      const num = / \(#(?<prNumber>[0-9]+)\)$/m.exec(msg)?.groups?.prNumber;
+      return num ? parseInt(num, 10) : void 0;
+    };
     var FetchApi = class extends types_1.Api {
       constructor() {
         super(...arguments);
@@ -56358,8 +56384,8 @@ var require_fetch2 = __commonJS({
           const labels = (0, ramda_1.pluck)("name", pr.labels.nodes);
           return {
             ...pr,
-            type: (0, exports2.parseLabels)(this.config, "changeTypes", labels).find(Boolean) ?? "chore",
-            scopes: (0, exports2.parseLabels)(this.config, "scopes", labels)
+            type: (0, labels_1.parseLabels)(this.config, "changeTypes", labels).find(Boolean) ?? "chore",
+            scopes: (0, labels_1.parseLabels)(this.config, "scopes", labels)
           };
         }));
       }
@@ -56448,7 +56474,7 @@ var require_dist = __commonJS({
     var utils_1 = require_utils6();
     var project_1 = require_project2();
     var changelog_1 = require_changelog();
-    var fetch_1 = require_fetch2();
+    var labels_1 = require_labels();
     var utils_2 = require_utils6();
     Object.defineProperty(exports2, "exit", { enumerable: true, get: function() {
       return utils_2.exit;
@@ -56474,7 +56500,7 @@ var require_dist = __commonJS({
         return new _Relasy(config, github, project);
       }
       parseLabels(t, labels) {
-        return (0, fetch_1.parseLabels)(this.config, t, labels);
+        return (0, labels_1.parseLabels)(this.config, t, labels);
       }
     };
     exports2.Relasy = Relasy2;
@@ -56484,7 +56510,6 @@ var require_dist = __commonJS({
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
-  createLabel: () => createLabel,
   ensureLabel: () => ensureLabel,
   listExistingLabels: () => listExistingLabels
 });
@@ -56493,28 +56518,6 @@ var import_core = __toESM(require_core());
 var import_github = __toESM(require_github());
 var import_core2 = __toESM(require_dist());
 var { owner, repo } = import_github.context.repo;
-var COLORS = {
-  major: "B60205",
-  // red (GitHub danger)
-  breaking: "B60205",
-  // red (same as major)
-  feature: "0E8A16",
-  // green
-  fix: "1D76DB",
-  // blue
-  minor: "D4DADF",
-  // light gray
-  chore: "D4DADF",
-  // light gray
-  pkg: "c2e0c6"
-  // teal (package scope / grouping)
-};
-var createLabel = (type, existing, name, longName) => ({
-  name: `${type}/${name}`,
-  color: COLORS[name] || COLORS.pkg,
-  description: type === "type" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
-  existing: existing.has(`${type}/${name}`)
-});
 function normalizeColor(color) {
   return color.replace(/^#/, "").trim().toUpperCase();
 }
@@ -56526,39 +56529,34 @@ async function listExistingLabels(octokit) {
   });
   const map = /* @__PURE__ */ new Map();
   for (const l of labels) {
-    map.set(l.name, {
-      name: l.name,
-      color: (l.color || "").toUpperCase(),
-      description: l.description
-    });
+    map.set(l.name, { name: l.name });
   }
   return map;
 }
 async function ensureLabel(octokit, label) {
-  if (!label.existing) {
-    try {
-      await octokit.rest.issues.createLabel({
+  try {
+    if (label.existingName) {
+      await octokit.rest.issues.updateLabel({
         owner,
         repo,
-        name: label.name,
-        color: label.color,
-        description: label.description
+        name: label.existingName,
+        color: normalizeColor(label.color),
+        description: label.description,
+        new_name: label.name
+        // keep same, but explicit
       });
-      return;
-    } catch (e) {
-      throw e;
     }
+    await octokit.rest.issues.createLabel({
+      owner,
+      repo,
+      name: label.name,
+      color: label.color,
+      description: label.description
+    });
+    return;
+  } catch (e) {
+    throw e;
   }
-  await octokit.rest.issues.updateLabel({
-    owner,
-    repo,
-    name: label.name,
-    // current label name
-    color: normalizeColor(label.color),
-    description: label.description,
-    new_name: label.name
-    // keep same, but explicit
-  });
 }
 async function run() {
   try {
@@ -56587,7 +56585,6 @@ if (require.main === module) {
 }
 // Annotate the CommonJS export names for ESM import in node:
 0 && (module.exports = {
-  createLabel,
   ensureLabel,
   listExistingLabels
 });

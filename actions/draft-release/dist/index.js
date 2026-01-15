@@ -50798,7 +50798,12 @@ var require_labels = __commonJS({
       scope: "scopes",
       "\u{1F4E6}": "scopes"
     };
-    var printName = (type, key) => `${printNameMap[type]}/${key}`;
+    var printName = (type, key) => {
+      if (type === "changeTypes") {
+        return `${printNameMap[type]}/${key}`;
+      }
+      return `${printNameMap[type]} ${key}`;
+    };
     var colors = {
       major: "B60205",
       breaking: "B60205",

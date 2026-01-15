@@ -22,8 +22,14 @@ const parseNameMap: Record<AllowedLabelTypes, LabelType> = {
   "📦": "scopes",
 };
 
-const printName = (type: LabelType, key: string) =>
-  `${printNameMap[type]}/${key}`;
+const printName = (type: LabelType, key: string) => {
+
+  if (type === "changeTypes") {
+    return `${printNameMap[type]}/${key}`;
+  }
+  
+  return `${printNameMap[type]} ${key}`;
+}
 
 const colors: Record<string, string> = {
   major: "B60205", // red (GitHub danger)

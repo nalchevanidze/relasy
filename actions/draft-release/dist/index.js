@@ -50811,7 +50811,7 @@ var require_labels = __commonJS({
       fix: "1D76DB",
       minor: "D4DADF",
       chore: "D4DADF",
-      pkg: "c2e0c6"
+      pkg: "FFFFFF"
       // teal (package scope / grouping)
     };
     var parseLabel = (config, original) => {

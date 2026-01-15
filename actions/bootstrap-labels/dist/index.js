@@ -8,10 +8,6 @@ var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __commonJS = (cb, mod) => function __require() {
   return mod || (0, cb[__getOwnPropNames(cb)[0]])((mod = { exports: {} }).exports, mod), mod.exports;
 };
-var __export = (target, all) => {
-  for (var name in all)
-    __defProp(target, name, { get: all[name], enumerable: true });
-};
 var __copyProps = (to, from, except, desc) => {
   if (from && typeof from === "object" || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
@@ -28,7 +24,6 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
   mod
 ));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // ../../node_modules/.pnpm/@actions+core@1.11.1/node_modules/@actions/core/lib/utils.js
 var require_utils = __commonJS({
@@ -56525,59 +56520,21 @@ var require_dist = __commonJS({
 });
 
 // src/index.ts
-var index_exports = {};
-__export(index_exports, {
-  ensureLabel: () => ensureLabel
-});
-module.exports = __toCommonJS(index_exports);
 var import_core = __toESM(require_core());
 var import_github = __toESM(require_github());
 var import_core2 = __toESM(require_dist());
 var { owner, repo } = import_github.context.repo;
-async function ensureLabel(octokit, label) {
-  try {
-    if (label.existing) {
-      await octokit.rest.issues.updateLabel({
-        owner,
-        repo,
-        name: label.existing,
-        color: label.color,
-        description: label.description,
-        new_name: label.name
-        // keep same, but explicit
-      });
-    }
-    await octokit.rest.issues.createLabel({
-      owner,
-      repo,
-      name: label.name,
-      color: label.color,
-      description: label.description
-    });
-    return;
-  } catch (e) {
-    throw e;
-  }
-}
 async function run() {
   try {
     const relasy = await import_core2.Relasy.load();
     const octokit = (0, import_github.getOctokit)(process.env.GITHUB_TOKEN || "");
-    const labels = await octokit.paginate(
-      octokit.rest.issues.listLabelsForRepo,
-      {
-        owner,
-        repo,
-        per_page: 100
-      }
-    );
+    const labels = (await octokit.paginate(octokit.rest.issues.listLabelsForRepo, {
+      owner,
+      repo,
+      per_page: 100
+    })).map((l) => relasy.parseLabel(l.name)).filter((l) => l !== void 0);
     const map = /* @__PURE__ */ new Map();
-    for (const l of labels) {
-      const label = relasy.parseLabel(l.name);
-      if (label) {
-        map.set(l.name, label);
-      }
-    }
+    labels.forEach((l) => map.set(l.name, l));
     const changeTypes = Object.entries(relasy.config.changeTypes).map(
       ([name, longName]) => (0, import_core2.createLabel)("changeTypes", name, longName)
     );
@@ -56585,7 +56542,27 @@ async function run() {
       ([name, longName]) => (0, import_core2.createLabel)("scopes", name, longName)
     );
     Promise.all(
-      [...changeTypes, ...scopes].map((label) => ensureLabel(octokit, label))
+      [...changeTypes, ...scopes].map(async (label) => {
+        const existing = map.get(label.name);
+        if (existing?.existing) {
+          return octokit.rest.issues.updateLabel({
+            owner,
+            repo,
+            name: existing.existing,
+            color: label.color,
+            description: label.description,
+            new_name: label.name
+            // keep same, but explicit
+          });
+        }
+        await octokit.rest.issues.createLabel({
+          owner,
+          repo,
+          name: label.name,
+          color: label.color,
+          description: label.description
+        });
+      })
     );
   } catch (error) {
     if (error instanceof Error) {
@@ -56598,10 +56575,6 @@ async function run() {
 if (require.main === module) {
   run();
 }
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  ensureLabel
-});
 /*! Bundled license information:
 
 undici/lib/fetch/body.js:

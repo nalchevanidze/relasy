@@ -4,36 +4,6 @@ import { Relasy, Label, createLabel } from "@relasy/core";
 
 const { owner, repo } = context.repo;
 
-export async function ensureLabel(
-  octokit: ReturnType<typeof getOctokit>,
-  label: Label
-) {
-  try {
-    if (label.existing) {
-      await octokit.rest.issues.updateLabel({
-        owner,
-        repo,
-        name: label.existing,
-        color: label.color,
-        description: label.description,
-        new_name: label.name, // keep same, but explicit
-      });
-    }
-
-    await octokit.rest.issues.createLabel({
-      owner,
-      repo,
-      name: label.name,
-      color: label.color,
-      description: label.description,
-    });
-    return;
-  } catch (e: any) {
-    // If it was created concurrently, treat as unchanged
-    throw e;
-  }
-}
-
 async function run() {
   try {
     const relasy = await Relasy.load();
@@ -60,7 +30,28 @@ async function run() {
     );
 
     Promise.all(
-      [...changeTypes, ...scopes].map((label) => ensureLabel(octokit, label))
+      [...changeTypes, ...scopes].map(async (label) => {
+        const existing = map.get(label.name);
+
+        if (existing?.existing) {
+          return octokit.rest.issues.updateLabel({
+            owner,
+            repo,
+            name: existing.existing,
+            color: label.color,
+            description: label.description,
+            new_name: label.name, // keep same, but explicit
+          });
+        }
+
+        await octokit.rest.issues.createLabel({
+          owner,
+          repo,
+          name: label.name,
+          color: label.color,
+          description: label.description,
+        });
+      })
     );
   } catch (error) {
     if (error instanceof Error) {

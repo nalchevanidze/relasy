@@ -97,13 +97,13 @@ export const createLabel = (
 ): Label => ({
   type,
   key,
-  color: colors.pkg,
+  color: colors[key] || colors.pkg, // Use specific color or fallback to pkg
   description:
     type === "changeTypes"
-      ? `Relasy type label for versioning & changelog: ${longName}`
-      : `Relasy scope label for grouping changes: "${longName}"`,
+      ? `Label for versioning: ${longName}`
+      : `Label for affected scope: "${longName}"`,
   name: printName(type, key),
-  existing: existing,
+  existing,
 });
 
 export const parseLabels = <T extends LabelType>(

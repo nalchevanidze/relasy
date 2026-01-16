@@ -56355,8 +56355,8 @@ var require_labels = __commonJS({
     var createLabel2 = (type, key, longName, existing) => ({
       type,
       key,
-      color: colors.pkg,
-      description: type === "changeTypes" ? `Relasy type label for versioning & changelog: ${longName}` : `Relasy scope label for grouping changes: "${longName}"`,
+      color: colors[key] || colors.pkg,
+      description: type === "changeTypes" ? `Label for versioning: ${longName}` : `Label for affected scope: "${longName}"`,
       name: printName(type, key),
       existing
     });

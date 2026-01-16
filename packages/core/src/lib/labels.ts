@@ -51,7 +51,8 @@ export const parseLabel = <T extends LabelType>(
   config: Config,
   original: string
 ): Label | undefined => {
-  const [prefix, sub, ...rest] = original.trim()
+  const [prefix, sub, ...rest] = original
+    .trim()
     .replaceAll(":", "/")
     .replaceAll(" ", "/")
     .split("/");
@@ -87,10 +88,6 @@ export const parseLabel = <T extends LabelType>(
     `invalid label ${original}. key ${sub} could not be found on object with fields: ${fields}`
   );
 };
-
-function normalizeColor(color: string): string {
-  return color.replace(/^#/, "").trim().toUpperCase();
-}
 
 export const createLabel = (
   type: LabelType,

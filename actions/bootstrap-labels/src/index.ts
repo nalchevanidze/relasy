@@ -1,6 +1,6 @@
 import { setFailed } from "@actions/core";
 import { context, getOctokit } from "@actions/github";
-import { Relasy, Label, createLabel } from "@relasy/core";
+import { Relasy } from "@relasy/core";
 
 const { owner, repo } = context.repo;
 
@@ -15,10 +15,10 @@ async function run() {
         owner,
         repo,
         per_page: 100,
-      }
+      },
     );
 
-    const ls = labels.map((l) => l.name)
+    const ls = labels.map((l) => l.name);
 
     console.log(`fetched labels: ${JSON.stringify(ls)}`);
 
@@ -44,7 +44,7 @@ async function run() {
           color: label.color,
           description: label.description,
         });
-      })
+      }),
     );
   } catch (error) {
     if (error instanceof Error) {

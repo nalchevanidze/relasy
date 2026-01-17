@@ -1,6 +1,6 @@
 import { Config, LabelType } from "../config";
 import { createLabel, Label, parseLabel } from "./parse";
-export { Label, parseLabel, createLabel } from "./parse";
+export { Label } from "./parse";
 
 export const parseLabels = <T extends LabelType>(
   config: Config,

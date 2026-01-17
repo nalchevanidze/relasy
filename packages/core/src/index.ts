@@ -5,7 +5,7 @@ import { LabelType, loadConfig } from "./lib/config";
 import { setupEnv } from "./lib/utils";
 import { setupToolchain } from "./lib/project";
 import { renderChangelog } from "./lib/changelog";
-import { createLabel, genLabels, Label, parseLabel, parseLabels } from "./lib/labels";
+import { genLabels, parseLabels } from "./lib/labels";
 export { exit } from "./lib/utils";
 
 export class Relasy extends Api {

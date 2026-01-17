@@ -57018,15 +57018,8 @@ var require_labels = __commonJS({
   "../../packages/core/dist/lib/labels/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
-    exports2.genLabels = exports2.parseLabels = exports2.createLabel = exports2.parseLabel = void 0;
+    exports2.genLabels = exports2.parseLabels = void 0;
     var parse_1 = require_parse4();
-    var parse_2 = require_parse4();
-    Object.defineProperty(exports2, "parseLabel", { enumerable: true, get: function() {
-      return parse_2.parseLabel;
-    } });
-    Object.defineProperty(exports2, "createLabel", { enumerable: true, get: function() {
-      return parse_2.createLabel;
-    } });
     var parseLabels = (config, target, labels) => labels.map((label) => (0, parse_1.parseLabel)(config, label)).filter((label) => label?.type === target).map((label) => label.key);
     exports2.parseLabels = parseLabels;
     var genLabels = (config, ls) => {

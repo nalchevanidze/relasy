@@ -18,9 +18,9 @@ export class Relasy extends Api {
 
   public version = () => this.module.version();
 
-  public changelog = async () => {
+  public changelog() {
     return renderChangelog(this);
-  };
+  }
 
   public labels(ls: string[]) {
     return genLabels(this.config, ls);

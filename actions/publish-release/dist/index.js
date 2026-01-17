@@ -60570,15 +60570,15 @@ var require_dist = __commonJS({
       constructor() {
         super(...arguments);
         this.version = () => this.module.version();
-        this.changelog = async () => {
-          return (0, changelog_1.renderChangelog)(this);
-        };
       }
       static async load() {
         (0, utils_1.setupEnv)();
         const config = await (0, config_1.loadConfig)();
         const github = new gh_1.Github(config.gh);
         return new _Relasy(config, github, (0, project_1.setupToolchain)(config.project));
+      }
+      changelog() {
+        return (0, changelog_1.renderChangelog)(this);
       }
       labels(ls) {
         return (0, labels_1.genLabels)(this.config, ls);

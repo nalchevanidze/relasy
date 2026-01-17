@@ -56294,9 +56294,9 @@ var require_project2 = __commonJS({
   }
 });
 
-// ../../packages/core/dist/lib/labels.js
+// ../../packages/core/dist/lib/labels/index.js
 var require_labels = __commonJS({
-  "../../packages/core/dist/lib/labels.js"(exports2) {
+  "../../packages/core/dist/lib/labels/index.js"(exports2) {
     "use strict";
     Object.defineProperty(exports2, "__esModule", { value: true });
     exports2.parseLabels = exports2.createLabel = exports2.parseLabel = void 0;

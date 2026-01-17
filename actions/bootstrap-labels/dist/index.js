@@ -57001,7 +57001,7 @@ var require_parse4 = __commonJS({
       throw new Error(`invalid label ${original}. key ${sub} could not be found on object with fields: ${fields}`);
     };
     exports2.parseLabel = parseLabel;
-    var createLabel2 = (type, key, longName, existing) => ({
+    var createLabel = (type, key, longName, existing) => ({
       type,
       key,
       color: colors[key] || colors.pkg,
@@ -57009,7 +57009,7 @@ var require_parse4 = __commonJS({
       name: printName(type, key),
       existing
     });
-    exports2.createLabel = createLabel2;
+    exports2.createLabel = createLabel;
   }
 });
 
@@ -57241,7 +57241,6 @@ async function run() {
     console.log(`fetched labels: ${JSON.stringify(ls)}`);
     Promise.all(
       relasy.labels(ls).map(async (label) => {
-        console.log(`Processing label: ${label.name}`);
         if (label?.existing) {
           return octokit.rest.issues.updateLabel({
             owner,

@@ -60391,22 +60391,32 @@ var require_labels = __commonJS({
     exports2.parseLabels = exports2.genLabels = void 0;
     var parse_1 = require_parse4();
     var genLabels = (config, ls) => {
-      const map = /* @__PURE__ */ new Map();
+      const changeTypes = /* @__PURE__ */ new Map();
+      const scopes = /* @__PURE__ */ new Map();
       ls.forEach((l) => {
         const parsed = (0, parse_1.parseLabel)(config, l);
-        if (parsed) {
-          map.set(parsed.name, parsed);
+        switch (parsed?.type) {
+          case "changeTypes":
+            changeTypes.set(parsed.name, parsed);
+            break;
+          case "scopes":
+            scopes.set(parsed.name, parsed);
+            break;
         }
       });
-      const add = (t) => ([n, longName]) => {
-        const l = (0, parse_1.createLabel)(t, n, longName);
-        if (!map.has(l.name)) {
-          map.set(l.name, l);
+      Object.entries(config.changeTypes).forEach(([n, longName]) => {
+        const l = (0, parse_1.createLabel)("changeTypes", n, longName);
+        if (!changeTypes.has(l.name)) {
+          changeTypes.set(l.name, l);
         }
-      };
-      Object.entries(config.changeTypes).forEach(add("changeTypes"));
-      Object.entries(config.scopes).forEach(add("scopes"));
-      return [...map.values()];
+      });
+      Object.entries(config.scopes).forEach(([n, longName]) => {
+        const l = (0, parse_1.createLabel)("scopes", n, longName);
+        if (!scopes.has(l.name)) {
+          scopes.set(l.name, l);
+        }
+      });
+      return [...changeTypes.values(), ...scopes.values()];
     };
     exports2.genLabels = genLabels;
     var parseLabels = (config, labels) => {

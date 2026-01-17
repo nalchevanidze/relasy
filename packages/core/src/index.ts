@@ -33,19 +33,13 @@ export class Relasy extends Api {
 
   public labels(ls: string[]) {
     const map = new Map<string, Label>();
+
     ls.forEach((l) => {
-         console.log(`parsing label: ${l}`);
-
       const parsed = parseLabel(this.config, l);
-
-      console.log(`parsed label: ${JSON.stringify(parsed)}`);
-
       if (parsed) {
         map.set(parsed.name, parsed);
       }
     });
-
-    console.log(`existing: ${JSON.stringify([...map.values()])}`);
 
     const add =
       (t: LabelType) =>
@@ -59,7 +53,6 @@ export class Relasy extends Api {
     Object.entries(this.config.changeTypes).forEach(add("changeTypes"));
     Object.entries(this.config.scopes).forEach(add("scopes"));
 
-    console.log(`changes: ${JSON.stringify([...map.values()])}`);
     return [...map.values()];
   }
 

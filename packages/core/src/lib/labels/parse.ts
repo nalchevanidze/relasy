@@ -27,11 +27,12 @@ const parseNameMap: Record<string, LabelType> = {
   "🐛": "changeTypes",
   "🧹": "changeTypes",
   "🚨": "changeTypes",
+  "🏷️": "changeTypes",
 };
 
 const printName = (type: LabelType, key: string) => {
   if (type === "changeTypes") {
-    return `${emojies[key]} ${key}`;
+    return `${emojies[key] ?? "🏷️"} ${key}`;
   }
 
   return `📦 ${key}`;

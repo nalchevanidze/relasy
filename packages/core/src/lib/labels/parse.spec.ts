@@ -239,7 +239,7 @@ describe("parseLabel", () => {
         key: "custom",
         color: "FFFFFF", // Falls back to pkg color
         description: "Label for versioning: Custom Type",
-        name: "✨ custom", // Falls back to feature emoji since custom isn't in emojies map
+        name: "🏷️ custom", // Falls back to feature emoji since custom isn't in emojies map
         existing: "custom",
       });
     });

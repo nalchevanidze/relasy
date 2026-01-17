@@ -22,16 +22,18 @@ const stat = (topics: [string, string][]) =>
   lines(
     topics
       .filter(([_, value]) => value)
-      .map(([topic, value]) => space(1, `- ${topic} ${value}`))
+      .map(([topic, value]) => space(1, `- ${topic} ${value}`)),
   );
 
 const indent = (txt: string, n: number = 1) =>
   space(n, txt.replace(/\n/g, `\n${space(n)}`));
 
-export class RenderAPI extends Api {
+export class RenderAPI {
+  constructor(private api: Api) {}
+
   private pkg = (key: string) => {
-    const id = this.config.scopes[key];
-    return link(key, this.module.pkg(id));
+    const id = this.api.config.scopes[key];
+    return link(key, this.api.module.pkg(id));
   };
 
   private change = ({
@@ -47,7 +49,7 @@ export class RenderAPI extends Api {
 
     const head = `* ${link(
       `#${number}`,
-      this.github.issue(number)
+      this.api.github.issue(number),
     )}: ${title?.trim()}`;
 
     const stats = stat([
@@ -67,11 +69,12 @@ export class RenderAPI extends Api {
     return lines(
       [
         `## ${tag || "Unreleased"} (${getDate()})`,
-        ...Object.entries(this.config.changeTypes).flatMap(([type, label]) =>
-          isKey(groups, type) ? this.section(label, groups[type]) : ""
+        ...Object.entries(this.api.config.changeTypes).flatMap(
+          ([type, label]) =>
+            isKey(groups, type) ? this.section(label, groups[type]) : "",
         ),
       ],
-      2
+      2,
     );
   };
 }

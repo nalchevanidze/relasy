@@ -8,8 +8,10 @@ const parseNumber = (msg: string) => {
   return num ? parseInt(num, 10) : undefined;
 };
 
-export class FetchApi extends Api {
-  private commits = this.github.batch<Commit>(
+export class FetchApi {
+  constructor(private api: Api) {}
+
+  private commits = this.api.github.batch<Commit>(
     (i) =>
       `object(oid: "${i}") {
       ... on Commit {
@@ -24,7 +26,7 @@ export class FetchApi extends Api {
     }`,
   );
 
-  private pullRequests = this.github.batch<PR>(
+  private pullRequests = this.api.github.batch<PR>(
     (i) =>
       `pullRequest(number: ${i}) {
       number
@@ -37,7 +39,7 @@ export class FetchApi extends Api {
 
   private toPRNumber = (c: Commit): number | undefined =>
     c.associatedPullRequests.nodes.find(({ repository }) =>
-      this.github.isOwner(repository),
+      this.api.github.isOwner(repository),
     )?.number ?? parseNumber(c.message);
 
   public changes = (version: string) =>
@@ -47,7 +49,7 @@ export class FetchApi extends Api {
       .then(
         map((pr): Change => {
           const { changeTypes, scopes } = parseLabels(
-            this.config,
+            this.api.config,
             pluck("name", pr.labels.nodes),
           );
 

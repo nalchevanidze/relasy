@@ -1,19 +1,19 @@
+import { lastTag } from "../git";
 import { FetchApi } from "./fetch";
 import { RenderAPI } from "./render";
-import { isBreaking } from "./types";
-import { Github } from "../gh";
-import { Config } from "../config";
-import { Module } from "../project/types";
+import { Api, isBreaking } from "./types";
 
-export const renderChangelog = async (
-  config: Config,
-  module: Module,
-  github: Github,
-  version: string
-) => {
-  const fetch = new FetchApi(config, github, module);
-  const render = new RenderAPI(config, github, module);
-  const changes = await fetch.changes(version);
-  await module.next(isBreaking(changes));
-  return render.changes(module.version(), changes);
+export const renderChangelog = async (api: Api) => {
+  const version = lastTag();
+  const projectVersion = api.module.version();
+
+  if (version.replace(/^v/, "") !== projectVersion.replace(/^v/, "")) {
+    throw Error(`versions does not match: ${version} ${projectVersion}`);
+  }
+
+  const changes = await new FetchApi(api).changes(version);
+
+  await api.module.next(isBreaking(changes));
+
+  return new RenderAPI(api).changes(api.module.version(), changes);
 };

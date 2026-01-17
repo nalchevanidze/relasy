@@ -57208,9 +57208,6 @@ var require_dist = __commonJS({
       parseLabels(t, labels) {
         return (0, labels_1.parseLabels)(this.config, t, labels);
       }
-      parseLabel(original) {
-        return (0, labels_1.parseLabel)(this.config, original);
-      }
     };
     exports2.Relasy = Relasy2;
   }

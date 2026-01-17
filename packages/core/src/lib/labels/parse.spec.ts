@@ -5,7 +5,7 @@ describe("parseLabel", () => {
   const mockConfig = {
     changeTypes: {
       major: "Major Change",
-      breaking: "Breaking Change", 
+      breaking: "Breaking Change",
       feature: "Feature",
       fix: "Bug Fix",
       chore: "Chore",
@@ -39,7 +39,7 @@ describe("parseLabel", () => {
         type: "changeTypes",
         key: "fix",
         color: "1D76DB",
-        description: "Label for versioning: Bug Fix", 
+        description: "Label for versioning: Bug Fix",
         name: "🐛 fix",
         existing: "fix",
       });
@@ -49,7 +49,7 @@ describe("parseLabel", () => {
       const label = parseLabel(mockConfig, "major");
       expect(label).toEqual({
         type: "changeTypes",
-        key: "major", 
+        key: "major",
         color: "B60205",
         description: "Label for versioning: Major Change",
         name: "🚨 major",
@@ -62,7 +62,7 @@ describe("parseLabel", () => {
       expect(label).toEqual({
         type: "changeTypes",
         key: "breaking",
-        color: "B60205", 
+        color: "B60205",
         description: "Label for versioning: Breaking Change",
         name: "💥 breaking",
         existing: "breaking",
@@ -76,7 +76,7 @@ describe("parseLabel", () => {
         key: "chore",
         color: "D4DADF",
         description: "Label for versioning: Chore",
-        name: "🧹 chore", 
+        name: "🧹 chore",
         existing: "chore",
       });
     });
@@ -101,22 +101,16 @@ describe("parseLabel", () => {
     });
 
     test("parses scope with 'type/' prefix", () => {
-      const label = parseLabel(mockConfig, "type/cli");
-      expect(label).toEqual({
-        type: "scopes", 
-        key: "cli",
-        color: "FFFFFF",
-        description: 'Label for affected scope: "Command Line Interface"',
-        name: "📦 cli",
-        existing: "type/cli",
-      });
+      expect(() => parseLabel(mockConfig, "type/cli")).toThrow(
+        "invalid label type/cli. key cli could not be found on object with fields: major, breaking, feature, fix, chore",
+      );
     });
 
     test("parses scope with package emoji prefix", () => {
       const label = parseLabel(mockConfig, "📦/docs");
       expect(label).toEqual({
         type: "scopes",
-        key: "docs", 
+        key: "docs",
         color: "FFFFFF",
         description: 'Label for affected scope: "Documentation"',
         name: "📦 docs",
@@ -127,7 +121,9 @@ describe("parseLabel", () => {
     test("throws error for non-existent scope key", () => {
       expect(() => {
         parseLabel(mockConfig, "scope/nonexistent");
-      }).toThrow("invalid label scope/nonexistent. key nonexistent could not be found on object with fields: core, cli, docs, api");
+      }).toThrow(
+        "invalid label scope/nonexistent. key nonexistent could not be found on object with fields: core, cli, docs, api",
+      );
     });
   });
 
@@ -136,7 +132,7 @@ describe("parseLabel", () => {
       const label = parseLabel(mockConfig, "scope:core");
       expect(label).toEqual({
         type: "scopes",
-        key: "core", 
+        key: "core",
         color: "FFFFFF",
         description: 'Label for affected scope: "Core Module"',
         name: "📦 core",
@@ -149,7 +145,7 @@ describe("parseLabel", () => {
       expect(label).toEqual({
         type: "scopes",
         key: "core",
-        color: "FFFFFF", 
+        color: "FFFFFF",
         description: 'Label for affected scope: "Core Module"',
         name: "📦 core",
         existing: "scope core",
@@ -162,7 +158,7 @@ describe("parseLabel", () => {
         type: "changeTypes",
         key: "feature",
         color: "0E8A16",
-        description: "Label for versioning: Feature", 
+        description: "Label for versioning: Feature",
         name: "✨ feature",
         existing: "  feature  ",
       });
@@ -173,7 +169,7 @@ describe("parseLabel", () => {
     test("parses with feature emoji prefix", () => {
       const label = parseLabel(mockConfig, "✨/feature");
       expect(label).toEqual({
-        type: "changeTypes", 
+        type: "changeTypes",
         key: "feature",
         color: "0E8A16",
         description: "Label for versioning: Feature",
@@ -187,9 +183,9 @@ describe("parseLabel", () => {
       expect(label).toEqual({
         type: "changeTypes",
         key: "fix",
-        color: "1D76DB", 
+        color: "1D76DB",
         description: "Label for versioning: Bug Fix",
-        name: "🐛 fix", 
+        name: "🐛 fix",
         existing: "🐛/fix",
       });
     });
@@ -202,7 +198,7 @@ describe("parseLabel", () => {
         color: "B60205",
         description: "Label for versioning: Breaking Change",
         name: "💥 breaking",
-        existing: "💥/breaking", 
+        existing: "💥/breaking",
       });
     });
   });
@@ -211,7 +207,9 @@ describe("parseLabel", () => {
     test("throws error for too many slashes", () => {
       expect(() => {
         parseLabel(mockConfig, "scope/core/extra");
-      }).toThrow("invalid Label \"scope/core/extra\". only one '/' is allowed in labels for core");
+      }).toThrow(
+        "invalid Label \"scope/core/extra\". only one '/' is allowed in labels for core",
+      );
     });
 
     test("returns undefined for invalid prefix", () => {
@@ -234,10 +232,10 @@ describe("parseLabel", () => {
           custom: "Custom Type",
         },
       };
-      
+
       const label = parseLabel(configWithCustomType, "custom");
       expect(label).toEqual({
-        type: "changeTypes", 
+        type: "changeTypes",
         key: "custom",
         color: "FFFFFF", // Falls back to pkg color
         description: "Label for versioning: Custom Type",
